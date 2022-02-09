@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using TechRoguelike.Screens;
+using TechRoguelike.StateManagement;
 
 namespace TechRoguelike
 {
@@ -8,12 +10,26 @@ namespace TechRoguelike
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        private readonly ScreenManager _screenManager;
 
         public TechRoguelikeGame()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+
+            var screenFactory = new ScreenFactory();
+            Services.AddService(typeof(IScreenFactory), screenFactory);
+
+            _screenManager = new ScreenManager(this);
+            Components.Add(_screenManager);
+
+            AddInitialScreens();
+        }
+
+        private void AddInitialScreens()
+        {
+            _screenManager.AddScreen(new GameplayScreen(), PlayerIndex.One);
         }
 
         protected override void Initialize()

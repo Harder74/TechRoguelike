@@ -26,7 +26,7 @@ namespace TechRoguelike.Entities
 
         public void LoadContent(ContentManager content)
         {
-            _texture = content.Load<Texture2D>("tilesPacked");
+            _texture = content.Load<Texture2D>("ball");
         }
 
         /// <summary>
@@ -37,8 +37,19 @@ namespace TechRoguelike.Entities
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
 
-            spriteBatch.Draw(_texture, position, new Rectangle(225, 97, 30, 30), Color, 0f, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
+            spriteBatch.Draw(_texture, position, Color);
 
         }
+        /// <summary>
+        /// lets the gamescreen set player position from outside of this class
+        /// </summary>
+        /// <param name="pos"></param>
+        public void UpdatePlayerPos(Vector2 pos)
+        {
+            position = pos;
+            //bounds.X = position.X;
+            //bounds.Y = position.Y ;
+        }
+        
     }
 }

@@ -30,12 +30,12 @@ namespace TechRoguelike.StateManagement
         /// <summary>
         /// A SpriteFont shared by all GameScreens
         /// </summary>
-        public SpriteFont Font { get; private set; }
+        //public SpriteFont Font { get; private set; }
 
         /// <summary>
         /// A blank texture that can be used by the screens.
         /// </summary>
-        public Texture2D BlankTexture { get; private set; }
+       // public Texture2D BlankTexture { get; private set; }
 
         /// <summary>
         /// Constructs a new ScreenManager
@@ -44,6 +44,7 @@ namespace TechRoguelike.StateManagement
         public ScreenManager(Game game) : base(game)
         {
             _content = new ContentManager(game.Services, "Content");
+            
         }
 
         /// <summary>
@@ -61,8 +62,8 @@ namespace TechRoguelike.StateManagement
         protected override void LoadContent()
         {
             SpriteBatch = new SpriteBatch(GraphicsDevice);
-            Font = _content.Load<SpriteFont>("menufont");
-            BlankTexture = _content.Load<Texture2D>("blank");
+            //Font = _content.Load<SpriteFont>("menufont");
+           // BlankTexture = _content.Load<Texture2D>("blank");
 
             // Tell each of the screens to load thier content 
             foreach (var screen in _screens)
@@ -176,7 +177,7 @@ namespace TechRoguelike.StateManagement
         public void FadeBackBufferToBlack(float alpha)
         {
             SpriteBatch.Begin();
-            SpriteBatch.Draw(BlankTexture, GraphicsDevice.Viewport.Bounds, Color.Black * alpha);
+            //SpriteBatch.Draw(BlankTexture, GraphicsDevice.Viewport.Bounds, Color.Black * alpha);
             SpriteBatch.End();
         }
 
