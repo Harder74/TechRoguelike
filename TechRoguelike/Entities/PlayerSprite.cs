@@ -17,7 +17,7 @@ namespace TechRoguelike.Entities
         private PlayerFrames _frames;
         private SpriteEffects _flipEffect;
 
-        private const float ANIMATION_SPEED = 0.33f;
+        private const float ANIMATION_SPEED = 1f/6f;
         private double runAnimationTimer;
         private int runAnimationFrame;
 
@@ -70,11 +70,13 @@ namespace TechRoguelike.Entities
                     if (runAnimationFrame > 3) runAnimationFrame = 0;
                     runAnimationTimer -= ANIMATION_SPEED;
                 }
-                spriteBatch.Draw(_texture, position, _frames.playerRunNoWeapon[runAnimationFrame], Color, 0f, new Vector2(0,0), 1f, _flipEffect, 0);
+                spriteBatch.Draw(_texture, position, _frames.playerRunNoWeapon[runAnimationFrame], Color, 0f, new Vector2(32,32), 1f, _flipEffect, 0);
             }
             else
-            {
-                spriteBatch.Draw(_texture, position, new Rectangle(0, 1280, 64, 64), Color, 0f, new Vector2(0, 0), 1f, _flipEffect, 0);
+            {             
+                spriteBatch.Draw(_texture, position, _frames.playerSlide[0], Color, 0f, new Vector2(32, 32), 1f, _flipEffect, 0);
+                runAnimationFrame = 0;
+                runAnimationTimer = 0;
             }
             
            // spriteBatch.Draw(_texture, position, Color);

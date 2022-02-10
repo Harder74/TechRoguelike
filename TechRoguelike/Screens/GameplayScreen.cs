@@ -16,9 +16,11 @@ namespace TechRoguelike.Screens
         private ContentManager _content;
         private SpriteFont _gameFont;
 
-        public PlayerSprite _player;
+        private PlayerSprite _player;
         private Vector2 _playerPosition = new Vector2(200, 200);
-        private Vector2 _enemyPosition = new Vector2(100, 100);
+
+        private BulletSprite _bullet1;
+        private Vector2 _bulletPos1 = new Vector2(-100, 100);
 
         private readonly Random _random = new Random();
         
@@ -47,6 +49,9 @@ namespace TechRoguelike.Screens
            // _gameFont = _content.Load<SpriteFont>("gamefont");
             _player = new PlayerSprite(_playerPosition);
             _player.LoadContent(_content);
+
+            _bullet1 = new BulletSprite(BulletType.Thick, _bulletPos1);
+            _bullet1.LoadContent(_content);
             // A real game would probably have more content than this sample, so
             // it would take longer to load. We simulate that by delaying for a
             // while, giving you a chance to admire the beautiful loading screen.
@@ -75,7 +80,7 @@ namespace TechRoguelike.Screens
 
             if (IsActive)
             {
-                
+                _bullet1.Update(gameTime);
             }
         }
 
@@ -141,6 +146,7 @@ namespace TechRoguelike.Screens
             spriteBatch.Begin();
 
             _player.Draw(gameTime, spriteBatch);
+            _bullet1.Draw(gameTime, spriteBatch);
 
             spriteBatch.End();
 

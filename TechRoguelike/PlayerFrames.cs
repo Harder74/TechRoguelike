@@ -10,7 +10,7 @@ namespace TechRoguelike
         public readonly Rectangle[] playerLoad = 
         {
             
-            new Rectangle(0, 228, 64, 64),
+            new Rectangle(16, 228, 64, 64),
             new Rectangle(96, 228, 64, 64),
             new Rectangle(192, 228, 64, 64),
             new Rectangle(288, 228, 64, 64),
@@ -19,7 +19,7 @@ namespace TechRoguelike
 
         public readonly Rectangle[] playerSlide = 
         {
-            new Rectangle(0, 424, 64,64),
+            new Rectangle(16, 424, 64,64),
             new Rectangle(96, 424, 64,64),
             new Rectangle(192, 424, 64,64),
             new Rectangle(288, 424, 64,64),
@@ -28,7 +28,7 @@ namespace TechRoguelike
 
         public readonly Rectangle[] playerRunNoWeapon =
         {
-            new Rectangle(0, 1280, 64,64),
+            new Rectangle(16, 1280, 64,64),
             new Rectangle(96, 1280, 64,64),
             new Rectangle(192, 1280, 64,64),
             new Rectangle(288, 1280, 64,64),
