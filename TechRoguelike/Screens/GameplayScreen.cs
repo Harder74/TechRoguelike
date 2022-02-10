@@ -117,6 +117,15 @@ namespace TechRoguelike.Screens
                     movement.Normalize();
 
                 _playerPosition += movement * 8f;
+                _player.SetDirection(movement);
+                if (movement.Length() > 0)
+                {
+                    _player.SetIsMoving(true);
+                }
+                else
+                {
+                    _player.SetIsMoving(false);
+                }
                 _player.UpdatePlayerPos(_playerPosition);
             }
         }
