@@ -11,6 +11,7 @@ namespace TechRoguelike.Entities
     {
         private BulletType _bulletType;
         private BulletTypeFrame _frame;
+        private Random random = new Random();
 
         private Rectangle _source;
         private Texture2D _texture;
@@ -35,6 +36,7 @@ namespace TechRoguelike.Entities
             if (_position.X > 752)
             {
                 _position.X = -64;
+                _position.Y = (float)random.NextDouble() * 480 - 60;
             }
         }
 

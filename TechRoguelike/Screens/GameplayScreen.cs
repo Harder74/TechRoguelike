@@ -13,14 +13,15 @@ namespace TechRoguelike.Screens
 {
     public class GameplayScreen : GameScreen
     {
+        private Random random = new Random();
         private ContentManager _content;
         private SpriteFont _gameFont;
 
         private PlayerSprite _player;
         private Vector2 _playerPosition = new Vector2(200, 200);
 
-        private BulletSprite _bullet1;
-        private Vector2 _bulletPos1 = new Vector2(-100, 100);
+        private List<BulletSprite> _bullets = new List<BulletSprite>();
+        
 
         private readonly Random _random = new Random();
         
@@ -50,8 +51,27 @@ namespace TechRoguelike.Screens
             _player = new PlayerSprite(_playerPosition);
             _player.LoadContent(_content);
 
-            _bullet1 = new BulletSprite(BulletType.Thick, _bulletPos1);
-            _bullet1.LoadContent(_content);
+            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-500, (float)random.NextDouble() * 480 - 60)));
+            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-600, (float)random.NextDouble() * 480 - 60)));
+            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-700, (float)random.NextDouble() * 480 - 60)));
+            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-800, (float)random.NextDouble() * 480 - 60)));
+            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-1000, (float)random.NextDouble() * 480 - 60)));
+            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-1200, (float)random.NextDouble() * 480 - 60)));
+            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-1400, (float)random.NextDouble() * 480 - 60)));
+            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-1600, (float)random.NextDouble() * 480 - 60)));
+            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-2000, (float)random.NextDouble() * 480 - 60)));
+            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-2400, (float)random.NextDouble() * 480 - 60)));
+            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-2800, (float)random.NextDouble() * 480 - 60)));
+            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-3200, (float)random.NextDouble() * 480 - 60)));
+            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-3600, (float)random.NextDouble() * 480 - 60)));
+            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-4000, (float)random.NextDouble() * 480 - 60)));
+            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-5000, (float)random.NextDouble() * 480 - 60)));
+            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-5500, (float)random.NextDouble() * 480 - 60)));
+            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-5600, (float)random.NextDouble() * 480 - 60)));
+            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-5700, (float)random.NextDouble() * 480 - 60)));
+
+
+            foreach (BulletSprite bullet in _bullets) bullet.LoadContent(_content);
             // A real game would probably have more content than this sample, so
             // it would take longer to load. We simulate that by delaying for a
             // while, giving you a chance to admire the beautiful loading screen.
@@ -80,7 +100,7 @@ namespace TechRoguelike.Screens
 
             if (IsActive)
             {
-                _bullet1.Update(gameTime);
+                foreach (BulletSprite bullet in _bullets) bullet.Update(gameTime);
             }
         }
 
@@ -105,23 +125,23 @@ namespace TechRoguelike.Screens
                 // Otherwise move the player position.
                 var movement = Vector2.Zero;
 
-                if (keyboardState.IsKeyDown(Keys.Left))
+                if (keyboardState.IsKeyDown(Keys.A))
                     movement.X--;
 
-                if (keyboardState.IsKeyDown(Keys.Right))
+                if (keyboardState.IsKeyDown(Keys.D))
                     movement.X++;
 
-                if (keyboardState.IsKeyDown(Keys.Up))
+                if (keyboardState.IsKeyDown(Keys.W))
                     movement.Y--;
 
-                if (keyboardState.IsKeyDown(Keys.Down))
+                if (keyboardState.IsKeyDown(Keys.S))
                     movement.Y++;
 
                 
                 if (movement.Length() > 1)
                     movement.Normalize();
 
-                _playerPosition += movement * 8f;
+                _playerPosition += movement * 7f;
                 _player.SetDirection(movement);
                 if (movement.Length() > 0)
                 {
@@ -146,7 +166,7 @@ namespace TechRoguelike.Screens
             spriteBatch.Begin();
 
             _player.Draw(gameTime, spriteBatch);
-            _bullet1.Draw(gameTime, spriteBatch);
+            foreach (BulletSprite bullet in _bullets) bullet.Draw(gameTime, spriteBatch);
 
             spriteBatch.End();
 
