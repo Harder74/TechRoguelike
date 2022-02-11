@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using TechRoguelike.Collisions;
 
 namespace TechRoguelike.Entities
 {
@@ -16,6 +17,10 @@ namespace TechRoguelike.Entities
         private Rectangle _source;
         private Texture2D _texture;
         private Vector2 _position;
+        private Texture2D _testing;
+
+        private BoundingRectangle bounds = new BoundingRectangle(new Vector2(50, 50), 16, 16);
+        public BoundingRectangle Bounds => bounds;
 
         public BulletSprite(BulletType bulletType, Vector2 pos)
         {
@@ -28,6 +33,7 @@ namespace TechRoguelike.Entities
         public void LoadContent(ContentManager content)
         {
             _texture = content.Load<Texture2D>("BlueHazmatFull");
+            _testing = content.Load<Texture2D>("ball");
         }
 
         public void Update(GameTime gameTime)
@@ -37,12 +43,22 @@ namespace TechRoguelike.Entities
             {
                 _position.X = -64;
                 _position.Y = (float)random.NextDouble() * 480 - 60;
+                
             }
+
+            bounds.X = _position.X;
+            bounds.Y = _position.Y;
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, _position, _source, Color.White);
+            
+            spriteBatch.Draw(_texture, _position, _source, Color.White, 0f, new Vector2(32, 32), 1f, SpriteEffects.None, 0);
+            /*
+            var rect = new Rectangle((int)this.Bounds.X, (int)this.Bounds.Y, (int)this.Bounds.Width, (int)this.Bounds.Height);
+            spriteBatch.Draw(_testing, rect, Color.White);
+            */
+            
         }
     }
 }

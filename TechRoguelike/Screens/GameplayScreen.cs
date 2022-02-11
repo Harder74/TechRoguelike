@@ -50,7 +50,7 @@ namespace TechRoguelike.Screens
            // _gameFont = _content.Load<SpriteFont>("gamefont");
             _player = new PlayerSprite(_playerPosition);
             _player.LoadContent(_content);
-
+            _gameFont = _content.Load<SpriteFont>("gameplayfont");
             _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-500, (float)random.NextDouble() * 480 - 60)));
             _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-600, (float)random.NextDouble() * 480 - 60)));
             _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-700, (float)random.NextDouble() * 480 - 60)));
@@ -100,7 +100,16 @@ namespace TechRoguelike.Screens
 
             if (IsActive)
             {
-                foreach (BulletSprite bullet in _bullets) bullet.Update(gameTime);
+                foreach (BulletSprite bullet in _bullets)
+                {
+                    bullet.Update(gameTime);
+                    if (_player.Bounds.CollidesWith(bullet.Bounds))
+                    {
+                        ExitScreen();
+                        LoadingScreen.Load(ScreenManager, true, PlayerIndex.One, new MainMenuScreen());
+                    }
+                }
+                
             }
         }
 
@@ -158,16 +167,16 @@ namespace TechRoguelike.Screens
         public override void Draw(GameTime gameTime)
         {
             // This game has a blue background. Why? Because!
-            ScreenManager.GraphicsDevice.Clear(ClearOptions.Target, Color.Yellow, 0, 0);
+            ScreenManager.GraphicsDevice.Clear(ClearOptions.Target, Color.Black, 0, 0);
 
             // Our player and enemy are both actually just text strings.
             var spriteBatch = ScreenManager.SpriteBatch;
-
+            var _text = "Dodge bullets using W, A, S, D, to survive the game.";
             spriteBatch.Begin();
 
             _player.Draw(gameTime, spriteBatch);
             foreach (BulletSprite bullet in _bullets) bullet.Draw(gameTime, spriteBatch);
-
+            spriteBatch.DrawString(_gameFont, _text, new Vector2(), Color.White, 0, new Vector2(-200,0), 1f, SpriteEffects.None, 0);
             spriteBatch.End();
 
             // If the game is transitioning on or off, fade it out to black.

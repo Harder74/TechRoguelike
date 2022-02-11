@@ -5,11 +5,13 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using TechRoguelike.Collisions;
 
 namespace TechRoguelike.Entities
 {
     public class PlayerSprite
     {
+        private Texture2D _testing;
         private Texture2D _texture;
         private Vector2 position;
         private bool _isMoving;
@@ -27,10 +29,10 @@ namespace TechRoguelike.Entities
         private double idleAnimationTimer;
         private int jumpAnimationFrame;
 
-        /*
-        private BoundingRectangle bounds = new BoundingRectangle(new Vector2(200 - 16, 200 - 16), 16, 9);
+        
+        private BoundingRectangle bounds = new BoundingRectangle(new Vector2(50, 50), 54, 60);
         public BoundingRectangle Bounds => bounds;
-        */
+        
         public Color Color { get; set; } = Color.White;
 
         public PlayerSprite(Vector2 pos)
@@ -42,6 +44,7 @@ namespace TechRoguelike.Entities
         public void LoadContent(ContentManager content)
         {
             _texture = content.Load<Texture2D>("BlueHazmatFull");
+            _testing = content.Load<Texture2D>("ball");
         }
 
         /// <summary>
@@ -79,7 +82,10 @@ namespace TechRoguelike.Entities
                 runAnimationTimer = 0;
             }
             
-           // spriteBatch.Draw(_texture, position, Color);
+           /*
+            var rect = new Rectangle((int)this.Bounds.X, (int)this.Bounds.Y, (int)this.Bounds.Width, (int)this.Bounds.Height);
+            spriteBatch.Draw(_testing, rect, Color.White);
+           */
 
         }
         /// <summary>
@@ -89,8 +95,8 @@ namespace TechRoguelike.Entities
         public void UpdatePlayerPos(Vector2 pos)
         {
             position = pos;
-            //bounds.X = position.X;
-            //bounds.Y = position.Y ;
+            bounds.X = position.X - 27;
+            bounds.Y = position.Y - 30;
         }
 
         /// <summary>

@@ -30,7 +30,7 @@ namespace TechRoguelike.StateManagement
         /// <summary>
         /// A SpriteFont shared by all GameScreens
         /// </summary>
-        //public SpriteFont Font { get; private set; }
+        public SpriteFont Font { get; private set; }
 
         /// <summary>
         /// A blank texture that can be used by the screens.
@@ -62,7 +62,7 @@ namespace TechRoguelike.StateManagement
         protected override void LoadContent()
         {
             SpriteBatch = new SpriteBatch(GraphicsDevice);
-            //Font = _content.Load<SpriteFont>("menufont");
+            Font = _content.Load<SpriteFont>("menufont");
            // BlankTexture = _content.Load<Texture2D>("blank");
 
             // Tell each of the screens to load thier content 

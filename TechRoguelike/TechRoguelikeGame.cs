@@ -29,7 +29,7 @@ namespace TechRoguelike
 
         private void AddInitialScreens()
         {
-            _screenManager.AddScreen(new GameplayScreen(), PlayerIndex.One);
+            _screenManager.AddScreen(new MainMenuScreen(), null);
         }
 
         protected override void Initialize()
