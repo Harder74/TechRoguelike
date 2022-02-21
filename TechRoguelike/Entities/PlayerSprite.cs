@@ -11,7 +11,10 @@ namespace TechRoguelike.Entities
 {
     public class PlayerSprite
     {
+        private Texture2D _shipBasic;
         private Texture2D _testing;
+        private Texture2D _shipBoost1;
+        private Texture2D _shipBoost2;
         private Texture2D _texture;
         private Vector2 position;
         private bool _isMoving;
@@ -20,8 +23,10 @@ namespace TechRoguelike.Entities
         private SpriteEffects _flipEffect;
 
         private const float ANIMATION_SPEED = 1f/6f;
-        private double runAnimationTimer;
-        private int runAnimationFrame;
+        private double boostAnimationTimer;
+        private int boostAnimationFrame;
+
+        private float _rotation = 0f;
 
         private double loadAnimationTimer;
         private int loadAnimationFrame;
@@ -29,8 +34,10 @@ namespace TechRoguelike.Entities
         private double idleAnimationTimer;
         private int jumpAnimationFrame;
 
+        private float _scale = 3f;
+
         
-        private BoundingRectangle bounds = new BoundingRectangle(new Vector2(50, 50), 54, 60);
+        private BoundingRectangle bounds = new BoundingRectangle(new Vector2(50, 50), 32,32);
         public BoundingRectangle Bounds => bounds;
         
         public Color Color { get; set; } = Color.White;
@@ -44,7 +51,10 @@ namespace TechRoguelike.Entities
         public void LoadContent(ContentManager content)
         {
             _texture = content.Load<Texture2D>("BlueHazmatFull");
-            _testing = content.Load<Texture2D>("ball");
+            _shipBasic = content.Load<Texture2D>("ShipBasic");
+            _shipBoost1 = content.Load<Texture2D>("ShipBoost1");
+            _shipBoost2 = content.Load<Texture2D>("ShipBoost2");
+           // _testing = content.Load<Texture2D>("ball");
         }
 
         /// <summary>
@@ -57,29 +67,26 @@ namespace TechRoguelike.Entities
 
             if (_isMoving)
             {
-                if(_direction.X < 0)
-                {
-                    _flipEffect = SpriteEffects.FlipHorizontally;
-                }
-                else
-                {
-                    _flipEffect = SpriteEffects.None;
-                }
-                runAnimationTimer += gameTime.ElapsedGameTime.TotalSeconds;
+                
+                boostAnimationTimer += gameTime.ElapsedGameTime.TotalSeconds;
 
-                if (runAnimationTimer > ANIMATION_SPEED)
+                if (boostAnimationTimer > ANIMATION_SPEED)
                 {
-                    runAnimationFrame++;
-                    if (runAnimationFrame > 3) runAnimationFrame = 0;
-                    runAnimationTimer -= ANIMATION_SPEED;
+                    boostAnimationFrame++;
+                    if (boostAnimationFrame > 1) boostAnimationFrame = 0;
+                    boostAnimationTimer -= ANIMATION_SPEED;
                 }
-                spriteBatch.Draw(_texture, position, _frames.playerRunNoWeapon[runAnimationFrame], Color, 0f, new Vector2(32,32), 1f, _flipEffect, 0);
+                if(boostAnimationFrame == 0) spriteBatch.Draw(_shipBoost1, position, null, Color, _rotation, new Vector2(16, 16), _scale, SpriteEffects.None, 0f);
+                else spriteBatch.Draw(_shipBoost2, position, null, Color, _rotation, new Vector2(16, 16), _scale, SpriteEffects.None, 0f);
             }
             else
-            {             
+            {
+                /*
                 spriteBatch.Draw(_texture, position, _frames.playerSlide[0], Color, 0f, new Vector2(32, 32), 1f, _flipEffect, 0);
                 runAnimationFrame = 0;
                 runAnimationTimer = 0;
+                */
+                spriteBatch.Draw(_shipBasic, position, null, Color, _rotation, new Vector2(16,16), _scale, SpriteEffects.None, 0f);
             }
             
            /*
@@ -95,8 +102,8 @@ namespace TechRoguelike.Entities
         public void UpdatePlayerPos(Vector2 pos)
         {
             position = pos;
-            bounds.X = position.X - 27;
-            bounds.Y = position.Y - 30;
+            bounds.X = position.X - 16;
+            bounds.Y = position.Y - 16;
         }
 
         /// <summary>
@@ -115,6 +122,11 @@ namespace TechRoguelike.Entities
         public void SetDirection(Vector2 dir)
         {
             _direction = dir;
+        }
+
+        public void SetRotation(float angle)
+        {
+            _rotation = angle;
         }
     }
 }

@@ -6,6 +6,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 using TechRoguelike.StateManagement;
 using TechRoguelike.Entities;
 
@@ -19,9 +21,19 @@ namespace TechRoguelike.Screens
 
         private PlayerSprite _player;
         private Vector2 _playerPosition = new Vector2(200, 200);
+        private Vector2 _velocity;
+        private Vector2 _acceleration;
+        private float _angularAcceleration;
+        private Vector2 _direction;
+        const float LINEAR_ACCELERATION = 150;
+        const float ANGULAR_ACCELERATION = 12;
+
+        float angle;
+        float angularVelocity;
 
         private List<BulletSprite> _bullets = new List<BulletSprite>();
-        
+
+        private Song _fallingLeaves;
 
         private readonly Random _random = new Random();
         
@@ -51,6 +63,11 @@ namespace TechRoguelike.Screens
             _player = new PlayerSprite(_playerPosition);
             _player.LoadContent(_content);
             _gameFont = _content.Load<SpriteFont>("gameplayfont");
+            _fallingLeaves = _content.Load<Song>("FallingLeavesSong");
+            MediaPlayer.Volume = .25f;
+            MediaPlayer.Play(_fallingLeaves);
+
+            
             _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-500, (float)random.NextDouble() * 480 - 60)));
             _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-600, (float)random.NextDouble() * 480 - 60)));
             _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-700, (float)random.NextDouble() * 480 - 60)));
@@ -69,7 +86,7 @@ namespace TechRoguelike.Screens
             _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-5500, (float)random.NextDouble() * 480 - 60)));
             _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-5600, (float)random.NextDouble() * 480 - 60)));
             _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-5700, (float)random.NextDouble() * 480 - 60)));
-
+            
 
             foreach (BulletSprite bullet in _bullets) bullet.LoadContent(_content);
             // A real game would probably have more content than this sample, so
@@ -131,6 +148,91 @@ namespace TechRoguelike.Screens
             }
             else
             {
+                float t = (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
+                {
+                   // _acceleration += _direction * LINEAR_ACCELERATION;
+                  
+                    angularVelocity += ANGULAR_ACCELERATION * t;
+                   
+                    
+                }
+                if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
+                {
+                    //_acceleration += _direction * LINEAR_ACCELERATION; 
+                    angularVelocity -= ANGULAR_ACCELERATION * t;
+
+                }
+                if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
+                {
+                    _velocity += _direction * LINEAR_ACCELERATION * t;
+                    // _velocity += _acceleration * t;
+                    _player.SetIsMoving(true);
+                }
+                else
+                {
+                    if(_velocity.X > 0)
+                    {
+
+                        //_acceleration -=  Vector2.UnitX * 50f * t;
+                        _velocity.X -= 100f * t;
+                    }
+                    else if (_velocity.X < 0)
+                    {
+                        //_acceleration += Vector2.UnitX * 50f * t;
+                        _velocity.X += 100f * t;
+                    }
+                    else
+                    {
+                        _velocity.X = 0f;
+                    }
+
+                    if (_velocity.Y > 0)
+                    {
+
+                        //_acceleration -=  Vector2.UnitX * 50f * t;
+                        _velocity.Y -= 100f * t;
+                    }
+                    else if (_velocity.Y < 0)
+                    {
+                        //_acceleration += Vector2.UnitX * 50f * t;
+                        _velocity.Y += 100f * t;
+                    }
+                    else
+                    {
+                        _velocity.Y = 0f;
+                    }
+                    _player.SetIsMoving(false);
+                }
+                if(keyboardState.IsKeyUp(Keys.A) && keyboardState.IsKeyUp(Keys.D) && angularVelocity != 0f)
+                {
+                    if (angularVelocity > 0)
+                    {
+                        angularVelocity -= 5f * t;
+                    }
+                    if(angularVelocity < 0)
+                    {
+                        angularVelocity += 5f * t;
+                    }
+                }
+
+                angle += angularVelocity * t;
+                _direction.X = (float)Math.Sin(angle);
+                _direction.Y = -(float)Math.Cos(angle);
+
+               
+                _playerPosition += _velocity * t;
+
+                // Wrap the ship to keep it on-screen
+                var viewport = ScreenManager.Game.GraphicsDevice.Viewport;
+                if (_playerPosition.Y < 0) _playerPosition.Y = viewport.Height;
+                if (_playerPosition.Y > viewport.Height) _playerPosition.Y = 0;
+                if (_playerPosition.X < 0) _playerPosition.X = viewport.Width;
+                if (_playerPosition.X > viewport.Width) _playerPosition.X = 0;
+                _player.UpdatePlayerPos(_playerPosition);
+                _player.SetDirection(_direction);
+                _player.SetRotation(angle);
+                /*
                 // Otherwise move the player position.
                 var movement = Vector2.Zero;
 
@@ -161,6 +263,7 @@ namespace TechRoguelike.Screens
                     _player.SetIsMoving(false);
                 }
                 _player.UpdatePlayerPos(_playerPosition);
+                */
             }
         }
 
