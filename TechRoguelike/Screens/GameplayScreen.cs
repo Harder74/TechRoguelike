@@ -57,8 +57,6 @@ namespace TechRoguelike.Screens
             _pauseAction = new InputAction(
                 new[] { Buttons.Start, Buttons.Back },
                 new[] { Keys.Back }, true);
-            
-
         }
 
         // Load graphics content for the game
@@ -66,68 +64,31 @@ namespace TechRoguelike.Screens
         {
             if (_content == null)
                 _content = new ContentManager(ScreenManager.Game.Services, "Content");
-
-           // _gameFont = _content.Load<SpriteFont>("gamefont");
+    
             _player = new PlayerSprite(_playerPosition);
             _player.LoadContent(_content);
             _gameFont = _content.Load<SpriteFont>("gameplayfont");
             _fallingLeaves = _content.Load<Song>("FallingLeavesSong");
             MediaPlayer.Volume = .25f;
             MediaPlayer.Play(_fallingLeaves);
-
-            /*
-            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-500, (float)random.NextDouble() * 480 - 60)));
-            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-600, (float)random.NextDouble() * 480 - 60)));
-            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-700, (float)random.NextDouble() * 480 - 60)));
-            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-800, (float)random.NextDouble() * 480 - 60)));
-            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-1000, (float)random.NextDouble() * 480 - 60)));
-            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-1200, (float)random.NextDouble() * 480 - 60)));
-            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-1400, (float)random.NextDouble() * 480 - 60)));
-            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-1600, (float)random.NextDouble() * 480 - 60)));
-            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-2000, (float)random.NextDouble() * 480 - 60)));
-            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-2400, (float)random.NextDouble() * 480 - 60)));
-            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-2800, (float)random.NextDouble() * 480 - 60)));
-            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-3200, (float)random.NextDouble() * 480 - 60)));
-            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-3600, (float)random.NextDouble() * 480 - 60)));
-            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-4000, (float)random.NextDouble() * 480 - 60)));
-            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-5000, (float)random.NextDouble() * 480 - 60)));
-            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-5500, (float)random.NextDouble() * 480 - 60)));
-            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-5600, (float)random.NextDouble() * 480 - 60)));
-            _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-5700, (float)random.NextDouble() * 480 - 60)));
-            */
             _texture = _content.Load<Texture2D>("BlueHazmatFull");
             _shot = _content.Load<Texture2D>("BasicShot");
             _testing = _content.Load<Texture2D>("ball");
             soundEffect = _content.Load<SoundEffect>("FullSweep");
-            SoundEffect.MasterVolume = .25f;
-            
-           
-            // A real game would probably have more content than this sample, so
-            // it would take longer to load. We simulate that by delaying for a
-            // while, giving you a chance to admire the beautiful loading screen.
-            //Thread.Sleep(1000);
-
-            // once the load has finished, we use ResetElapsedTime to tell the game's
-            // timing mechanism that we have just finished a very long frame, and that
-            // it should not try to catch up.
-            //ScreenManager.Game.ResetElapsedTime();
+            SoundEffect.MasterVolume = .25f;    
         }
 
         // This method checks the GameScreen.IsActive property, so the game will
         // stop updating when the pause menu is active, or if you tab away to a different application.
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
-            base.Update(gameTime, otherScreenHasFocus, false);
-
-            
+            base.Update(gameTime, otherScreenHasFocus, false);           
             // Gradually fade in or out depending on whether we are covered by the pause screen.
             if (coveredByOtherScreen)
                 _pauseAlpha = Math.Min(_pauseAlpha + 1f / 32, 1);
             else
                 _pauseAlpha = Math.Max(_pauseAlpha - 1f / 32, 0);
             
-
-
             if (IsActive)
             {
                 foreach (BulletSprite bullet in _bullets)
@@ -139,6 +100,7 @@ namespace TechRoguelike.Screens
                     {
                         ExitScreen();
                         LoadingScreen.Load(ScreenManager, true, PlayerIndex.One, new MainMenuScreen());
+                        MediaPlayer.Pause();
                     }
                     */
                 }
@@ -164,54 +126,57 @@ namespace TechRoguelike.Screens
             else
             {
                 float t = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                //adds rotation based on players input
                 if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
                 {
-                   // _acceleration += _direction * LINEAR_ACCELERATION;
-                  
-                    angularVelocity += ANGULAR_ACCELERATION * t;
-                   
-                    
+                    if (angularVelocity < 15)
+                    {
+                        angularVelocity += ANGULAR_ACCELERATION * t;
+                    }        
                 }
                 if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
                 {
-                    //_acceleration += _direction * LINEAR_ACCELERATION; 
-                    angularVelocity -= ANGULAR_ACCELERATION * t;
-
+                    if(angularVelocity > -15)
+                    {
+                        angularVelocity -= ANGULAR_ACCELERATION * t;
+                    }
                 }
+
+                //player input for shooting
                 if(keyboardState.IsKeyDown(Keys.Space))
                 {
                     fireRateTimer += gameTime.ElapsedGameTime.TotalSeconds;
                     if (!_initialShot)
                     {
-                        _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(_playerPosition.X, _playerPosition.Y), _shot, _direction, viewport));
-                        _initialShot = true;
                         soundEffect.Play();
+                        _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(_playerPosition.X, _playerPosition.Y), _shot, _direction, viewport, angle));
+                        _initialShot = true;
                     }
                     else if (fireRateTimer > FIRE_RATE)
                     {
-                        _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(_playerPosition.X, _playerPosition.Y), _shot, _direction, viewport));
-                        fireRateTimer = 0;
                         soundEffect.Play();
+                        _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(_playerPosition.X, _playerPosition.Y), _shot, _direction, viewport, angle));
+                        fireRateTimer = 0;
                     }                  
                 }
+                //checks for player input to reset initial shot
                 if (keyboardState.IsKeyUp(Keys.Space)) _initialShot = false;
+
+                //checks for player input for boost, and slows down player when not boosting
                 if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
                 {
                     _velocity += _direction * LINEAR_ACCELERATION * t;
-                    // _velocity += _acceleration * t;
                     _player.SetIsMoving(true);
                 }
                 else
                 {
                     if(_velocity.X > 0)
                     {
-
-                        //_acceleration -=  Vector2.UnitX * 50f * t;
                         _velocity.X -= 100f * t;
                     }
                     else if (_velocity.X < 0)
                     {
-                        //_acceleration += Vector2.UnitX * 50f * t;
                         _velocity.X += 100f * t;
                     }
                     else
@@ -221,13 +186,10 @@ namespace TechRoguelike.Screens
 
                     if (_velocity.Y > 0)
                     {
-
-                        //_acceleration -=  Vector2.UnitX * 50f * t;
                         _velocity.Y -= 100f * t;
                     }
                     else if (_velocity.Y < 0)
                     {
-                        //_acceleration += Vector2.UnitX * 50f * t;
                         _velocity.Y += 100f * t;
                     }
                     else
@@ -236,6 +198,8 @@ namespace TechRoguelike.Screens
                     }
                     _player.SetIsMoving(false);
                 }
+
+                //checks if player has stopped inputing a rotation to slow the rotation
                 if(keyboardState.IsKeyUp(Keys.A) && keyboardState.IsKeyUp(Keys.D) && angularVelocity != 0f)
                 {
                     if (angularVelocity > 0)
@@ -248,60 +212,27 @@ namespace TechRoguelike.Screens
                     }
                 }
 
+                //updates parameters based on inputs
                 angle += angularVelocity * t;
                 _direction.X = (float)Math.Sin(angle);
                 _direction.Y = -(float)Math.Cos(angle);
-
-               
                 _playerPosition += _velocity * t;
 
                 // Wrap the ship to keep it on-screen
-                
                 if (_playerPosition.Y < 0) _playerPosition.Y = viewport.Height;
                 if (_playerPosition.Y > viewport.Height) _playerPosition.Y = 0;
                 if (_playerPosition.X < 0) _playerPosition.X = viewport.Width;
                 if (_playerPosition.X > viewport.Width) _playerPosition.X = 0;
+
+                //updates playersprite based on updated parameters
                 _player.UpdatePlayerPos(_playerPosition);
                 _player.SetDirection(_direction);
                 _player.SetRotation(angle);
-                /*
-                // Otherwise move the player position.
-                var movement = Vector2.Zero;
-
-                if (keyboardState.IsKeyDown(Keys.A))
-                    movement.X--;
-
-                if (keyboardState.IsKeyDown(Keys.D))
-                    movement.X++;
-
-                if (keyboardState.IsKeyDown(Keys.W))
-                    movement.Y--;
-
-                if (keyboardState.IsKeyDown(Keys.S))
-                    movement.Y++;
-
-                
-                if (movement.Length() > 1)
-                    movement.Normalize();
-
-                _playerPosition += movement * 7f;
-                _player.SetDirection(movement);
-                if (movement.Length() > 0)
-                {
-                    _player.SetIsMoving(true);
-                }
-                else
-                {
-                    _player.SetIsMoving(false);
-                }
-                _player.UpdatePlayerPos(_playerPosition);
-                */
             }
         }
 
         public override void Draw(GameTime gameTime)
         {
-            // This game has a blue background. Why? Because!
             ScreenManager.GraphicsDevice.Clear(ClearOptions.Target, Color.Black, 0, 0);
 
             // Our player and enemy are both actually just text strings.
@@ -309,8 +240,9 @@ namespace TechRoguelike.Screens
             var _text = "Dodge bullets using W, A, S, D, to survive the game.";
             spriteBatch.Begin();
 
-            _player.Draw(gameTime, spriteBatch);
+            
             foreach (BulletSprite bullet in _bullets) bullet.Draw(gameTime, spriteBatch);
+            _player.Draw(gameTime, spriteBatch);
             spriteBatch.DrawString(_gameFont, _text, new Vector2(), Color.White, 0, new Vector2(-200,0), 1f, SpriteEffects.None, 0);
             spriteBatch.End();
 

@@ -76,8 +76,8 @@ namespace TechRoguelike.Entities
                     if (boostAnimationFrame > 1) boostAnimationFrame = 0;
                     boostAnimationTimer -= ANIMATION_SPEED;
                 }
-                if(boostAnimationFrame == 0) spriteBatch.Draw(_shipBoost1, position, null, Color, _rotation, new Vector2(16, 16), _scale, SpriteEffects.None, 0f);
-                else spriteBatch.Draw(_shipBoost2, position, null, Color, _rotation, new Vector2(16, 16), _scale, SpriteEffects.None, 0f);
+                if(boostAnimationFrame == 0) spriteBatch.Draw(_shipBoost1, position, null, Color, _rotation, new Vector2(16, 16), _scale, SpriteEffects.None, 1);
+                else spriteBatch.Draw(_shipBoost2, position, null, Color, _rotation, new Vector2(16, 16), _scale, SpriteEffects.None, 1);
             }
             else
             {
@@ -86,7 +86,7 @@ namespace TechRoguelike.Entities
                 runAnimationFrame = 0;
                 runAnimationTimer = 0;
                 */
-                spriteBatch.Draw(_shipBasic, position, null, Color, _rotation, new Vector2(16,16), _scale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(_shipBasic, position, null, Color, _rotation, new Vector2(16,16), _scale, SpriteEffects.None, 1);
             }
             
            /*

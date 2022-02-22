@@ -22,17 +22,19 @@ namespace TechRoguelike.Entities
         private Vector2 _direction;
         private Viewport viewport;
         public bool _destroy = false;
+        private float _rotation;
 
         private BoundingRectangle bounds = new BoundingRectangle(new Vector2(50, 50), 16, 16);
         public BoundingRectangle Bounds => bounds;
 
-        public BulletSprite(BulletType bulletType, Vector2 pos, Texture2D shot, Vector2 dir, Viewport view)
+        public BulletSprite(BulletType bulletType, Vector2 pos, Texture2D shot, Vector2 dir, Viewport view, float rotation)
         {
             _bulletType = bulletType;
             _position = pos;
             _shot = shot;
             _direction = dir;
             viewport = view;
+            _rotation = rotation;
         }
 
         public void LoadContent(ContentManager content)
@@ -44,7 +46,7 @@ namespace TechRoguelike.Entities
 
         public void Update(GameTime gameTime)
         {
-            _position += _direction * (float)gameTime.ElapsedGameTime.TotalSeconds * 250f;
+            _position += _direction * (float)gameTime.ElapsedGameTime.TotalSeconds * 500f;
             if (_position.Y < -64 || _position.Y > viewport.Height + 64 || _position.X < - 64 || _position.X > viewport.Width + 64) _destroy = true;
             bounds.X = _position.X - 8;
             bounds.Y = _position.Y - 8;
@@ -58,7 +60,7 @@ namespace TechRoguelike.Entities
             var rect = new Rectangle((int)this.Bounds.X, (int)this.Bounds.Y, (int)this.Bounds.Width, (int)this.Bounds.Height);
             spriteBatch.Draw(_testing, rect, Color.White);
             */
-            spriteBatch.Draw(_shot, _position, null, Color.White, (float)Math.PI/2, new Vector2(16, 16), 3f, SpriteEffects.None, 0);
+            spriteBatch.Draw(_shot, _position, null, Color.White, _rotation, new Vector2(16, 16), 3f, SpriteEffects.None, 0.1f);
         }
     }
 }
