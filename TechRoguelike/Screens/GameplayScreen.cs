@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
-using TechRoguelike.StateManagement;
+using System;
+using System.Collections.Generic;
 using TechRoguelike.Entities;
+using TechRoguelike.StateManagement;
 
 namespace TechRoguelike.Screens
 {
@@ -39,7 +36,14 @@ namespace TechRoguelike.Screens
         
         private float _pauseAlpha;
         private readonly InputAction _pauseAction;
-        
+
+        private const float FIRE_RATE = .5f;
+        private double fireRateTimer;
+
+        private Texture2D _texture;
+        private Texture2D _testing;
+        private Texture2D _shot;
+
 
         public GameplayScreen()
         {
@@ -67,7 +71,7 @@ namespace TechRoguelike.Screens
             MediaPlayer.Volume = .25f;
             MediaPlayer.Play(_fallingLeaves);
 
-            
+            /*
             _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-500, (float)random.NextDouble() * 480 - 60)));
             _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-600, (float)random.NextDouble() * 480 - 60)));
             _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-700, (float)random.NextDouble() * 480 - 60)));
@@ -86,9 +90,11 @@ namespace TechRoguelike.Screens
             _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-5500, (float)random.NextDouble() * 480 - 60)));
             _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-5600, (float)random.NextDouble() * 480 - 60)));
             _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(-5700, (float)random.NextDouble() * 480 - 60)));
-            
-
-            foreach (BulletSprite bullet in _bullets) bullet.LoadContent(_content);
+            */
+            _texture = _content.Load<Texture2D>("BlueHazmatFull");
+            _shot = _content.Load<Texture2D>("BasicShot");
+            _testing = _content.Load<Texture2D>("ball");
+           
             // A real game would probably have more content than this sample, so
             // it would take longer to load. We simulate that by delaying for a
             // while, giving you a chance to admire the beautiful loading screen.
@@ -120,11 +126,13 @@ namespace TechRoguelike.Screens
                 foreach (BulletSprite bullet in _bullets)
                 {
                     bullet.Update(gameTime);
+                    /*
                     if (_player.Bounds.CollidesWith(bullet.Bounds))
                     {
                         ExitScreen();
                         LoadingScreen.Load(ScreenManager, true, PlayerIndex.One, new MainMenuScreen());
                     }
+                    */
                 }
                 
             }
@@ -137,9 +145,8 @@ namespace TechRoguelike.Screens
 
             // Look up inputs for the active player profile.
             int playerIndex = (int)ControllingPlayer.Value;
-
             var keyboardState = input.CurrentKeyboardStates[playerIndex];
-
+            fireRateTimer += gameTime.ElapsedGameTime.TotalSeconds;
             
             PlayerIndex player;
             if (_pauseAction.Occurred(input, ControllingPlayer, out player))
@@ -162,6 +169,10 @@ namespace TechRoguelike.Screens
                     //_acceleration += _direction * LINEAR_ACCELERATION; 
                     angularVelocity -= ANGULAR_ACCELERATION * t;
 
+                }
+                if(keyboardState.IsKeyDown(Keys.Space) && fireRateTimer > FIRE_RATE)
+                {
+                    _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(_playerPosition.X, _playerPosition.Y), _shot, _direction));
                 }
                 if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
                 {

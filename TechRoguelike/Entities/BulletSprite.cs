@@ -11,24 +11,25 @@ namespace TechRoguelike.Entities
     public class BulletSprite
     {
         private BulletType _bulletType;
-        private BulletTypeFrame _frame;
+
         private Random random = new Random();
 
-        private Rectangle _source;
+
         private Texture2D _texture;
         private Vector2 _position;
         private Texture2D _testing;
         private Texture2D _shot;
+        private Vector2 _direction;
 
         private BoundingRectangle bounds = new BoundingRectangle(new Vector2(50, 50), 16, 16);
         public BoundingRectangle Bounds => bounds;
 
-        public BulletSprite(BulletType bulletType, Vector2 pos)
+        public BulletSprite(BulletType bulletType, Vector2 pos, Texture2D shot, Vector2 dir)
         {
-            _frame = new BulletTypeFrame();
             _bulletType = bulletType;
-            _source = _frame.GetBullet(bulletType);
             _position = pos;
+            _shot = shot;
+            _direction = dir;
         }
 
         public void LoadContent(ContentManager content)
@@ -40,7 +41,7 @@ namespace TechRoguelike.Entities
 
         public void Update(GameTime gameTime)
         {
-            _position += new Vector2(1, 0) * (float)gameTime.ElapsedGameTime.TotalSeconds * 150f;
+            _position += _direction * (float)gameTime.ElapsedGameTime.TotalSeconds * 250f;
             if (_position.X > 752)
             {
                 _position.X = -64;
@@ -48,8 +49,8 @@ namespace TechRoguelike.Entities
                 
             }
 
-            bounds.X = _position.X;
-            bounds.Y = _position.Y;
+            bounds.X = _position.X - 8;
+            bounds.Y = _position.Y - 8;
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
