@@ -67,6 +67,12 @@
 /processorParam:Quality=Best
 /build:FallingLeavesSong.mp3
 
+#begin FullSweep.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:FullSweep.wav
+
 #begin gameplayfont.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor

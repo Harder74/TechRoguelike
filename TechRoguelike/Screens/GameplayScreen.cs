@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using TechRoguelike.Entities;
 using TechRoguelike.StateManagement;
+using Microsoft.Xna.Framework.Audio;
 
 namespace TechRoguelike.Screens
 {
@@ -39,10 +40,13 @@ namespace TechRoguelike.Screens
 
         private const float FIRE_RATE = .5f;
         private double fireRateTimer;
+        private bool _initialShot = false;
 
         private Texture2D _texture;
         private Texture2D _testing;
         private Texture2D _shot;
+
+        private SoundEffect soundEffect;
 
 
         public GameplayScreen()
@@ -94,6 +98,9 @@ namespace TechRoguelike.Screens
             _texture = _content.Load<Texture2D>("BlueHazmatFull");
             _shot = _content.Load<Texture2D>("BasicShot");
             _testing = _content.Load<Texture2D>("ball");
+            soundEffect = _content.Load<SoundEffect>("FullSweep");
+            SoundEffect.MasterVolume = .25f;
+            
            
             // A real game would probably have more content than this sample, so
             // it would take longer to load. We simulate that by delaying for a
@@ -125,7 +132,8 @@ namespace TechRoguelike.Screens
             {
                 foreach (BulletSprite bullet in _bullets)
                 {
-                    bullet.Update(gameTime);
+                    if(bullet._destroy == false) bullet.Update(gameTime);
+
                     /*
                     if (_player.Bounds.CollidesWith(bullet.Bounds))
                     {
@@ -146,8 +154,8 @@ namespace TechRoguelike.Screens
             // Look up inputs for the active player profile.
             int playerIndex = (int)ControllingPlayer.Value;
             var keyboardState = input.CurrentKeyboardStates[playerIndex];
-            fireRateTimer += gameTime.ElapsedGameTime.TotalSeconds;
             
+            var viewport = ScreenManager.Game.GraphicsDevice.Viewport;
             PlayerIndex player;
             if (_pauseAction.Occurred(input, ControllingPlayer, out player))
             {
@@ -170,10 +178,23 @@ namespace TechRoguelike.Screens
                     angularVelocity -= ANGULAR_ACCELERATION * t;
 
                 }
-                if(keyboardState.IsKeyDown(Keys.Space) && fireRateTimer > FIRE_RATE)
+                if(keyboardState.IsKeyDown(Keys.Space))
                 {
-                    _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(_playerPosition.X, _playerPosition.Y), _shot, _direction));
+                    fireRateTimer += gameTime.ElapsedGameTime.TotalSeconds;
+                    if (!_initialShot)
+                    {
+                        _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(_playerPosition.X, _playerPosition.Y), _shot, _direction, viewport));
+                        _initialShot = true;
+                        soundEffect.Play();
+                    }
+                    else if (fireRateTimer > FIRE_RATE)
+                    {
+                        _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(_playerPosition.X, _playerPosition.Y), _shot, _direction, viewport));
+                        fireRateTimer = 0;
+                        soundEffect.Play();
+                    }                  
                 }
+                if (keyboardState.IsKeyUp(Keys.Space)) _initialShot = false;
                 if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
                 {
                     _velocity += _direction * LINEAR_ACCELERATION * t;
@@ -235,7 +256,7 @@ namespace TechRoguelike.Screens
                 _playerPosition += _velocity * t;
 
                 // Wrap the ship to keep it on-screen
-                var viewport = ScreenManager.Game.GraphicsDevice.Viewport;
+                
                 if (_playerPosition.Y < 0) _playerPosition.Y = viewport.Height;
                 if (_playerPosition.Y > viewport.Height) _playerPosition.Y = 0;
                 if (_playerPosition.X < 0) _playerPosition.X = viewport.Width;

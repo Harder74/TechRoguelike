@@ -20,16 +20,19 @@ namespace TechRoguelike.Entities
         private Texture2D _testing;
         private Texture2D _shot;
         private Vector2 _direction;
+        private Viewport viewport;
+        public bool _destroy = false;
 
         private BoundingRectangle bounds = new BoundingRectangle(new Vector2(50, 50), 16, 16);
         public BoundingRectangle Bounds => bounds;
 
-        public BulletSprite(BulletType bulletType, Vector2 pos, Texture2D shot, Vector2 dir)
+        public BulletSprite(BulletType bulletType, Vector2 pos, Texture2D shot, Vector2 dir, Viewport view)
         {
             _bulletType = bulletType;
             _position = pos;
             _shot = shot;
             _direction = dir;
+            viewport = view;
         }
 
         public void LoadContent(ContentManager content)
@@ -42,13 +45,7 @@ namespace TechRoguelike.Entities
         public void Update(GameTime gameTime)
         {
             _position += _direction * (float)gameTime.ElapsedGameTime.TotalSeconds * 250f;
-            if (_position.X > 752)
-            {
-                _position.X = -64;
-                _position.Y = (float)random.NextDouble() * 480 - 60;
-                
-            }
-
+            if (_position.Y < -64 || _position.Y > viewport.Height + 64 || _position.X < - 64 || _position.X > viewport.Width + 64) _destroy = true;
             bounds.X = _position.X - 8;
             bounds.Y = _position.Y - 8;
         }
