@@ -18,6 +18,7 @@ namespace TechRoguelike.Entities
         private Texture2D _texture;
         private Vector2 _position;
         private Texture2D _testing;
+        private Texture2D _shot;
 
         private BoundingRectangle bounds = new BoundingRectangle(new Vector2(50, 50), 16, 16);
         public BoundingRectangle Bounds => bounds;
@@ -33,6 +34,7 @@ namespace TechRoguelike.Entities
         public void LoadContent(ContentManager content)
         {
             _texture = content.Load<Texture2D>("BlueHazmatFull");
+            _shot = content.Load<Texture2D>("BasicShot");
             _testing = content.Load<Texture2D>("ball");
         }
 
@@ -52,13 +54,13 @@ namespace TechRoguelike.Entities
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            
-            spriteBatch.Draw(_texture, _position, _source, Color.White, 0f, new Vector2(32, 32), 1f, SpriteEffects.None, 0);
+
+            //spriteBatch.Draw(_texture, _position, _source, Color.White, 0f, new Vector2(32, 32), 1f, SpriteEffects.None, 0);
             /*
             var rect = new Rectangle((int)this.Bounds.X, (int)this.Bounds.Y, (int)this.Bounds.Width, (int)this.Bounds.Height);
             spriteBatch.Draw(_testing, rect, Color.White);
             */
-            
+            spriteBatch.Draw(_shot, _position, null, Color.White, (float)Math.PI/2, new Vector2(16, 16), 3f, SpriteEffects.None, 0);
         }
     }
 }
