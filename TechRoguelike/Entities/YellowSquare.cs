@@ -14,20 +14,25 @@ namespace TechRoguelike.Entities
             Health = 50;
             Position = pos;
             Texture = texture;
-            LinearAcceleration = 200f;
+            LinearAcceleration = 400f;
             Scale = 2f;
             Bounds = new BoundingRectangle(new Vector2(50, 50), 32, 32);
         }
 
         public override void Update(GameTime gameTime, Vector2 playerPos)
         {
+            if (Health < 0) IsDestroyed = true;
             float t = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            Direction = Vector2.Normalize(playerPos - Position);
+            Direction = Vector2.Normalize(playerPos - (Position));
             LinearVelocity += Direction * LinearAcceleration * t;
             LinearVelocity = Vector2.Clamp(LinearVelocity, MIN_VELOCITY, MAX_VELOCITY);
+            if (LinearVelocity.X > 150) LinearVelocity.X -= 15f;
+            if (LinearVelocity.X < -150) LinearVelocity.X += 15f;
+            if (LinearVelocity.Y < -150) LinearVelocity.Y += 15f;
+            if (LinearVelocity.Y > 150) LinearVelocity.Y -= 15f;
             Position += LinearVelocity * t;
-            Bounds.X = Position.X;
-            Bounds.Y = Position.Y;
+            Bounds.X = Position.X - 16;
+            Bounds.Y = Position.Y - 16;
             if (Health < 0) IsDestroyed = true;
 
         }

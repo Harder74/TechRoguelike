@@ -106,27 +106,32 @@ namespace TechRoguelike.Screens
                 }
                 enemies.RemoveAll(x => x.IsDestroyed == true);
                 _bullets.RemoveAll(x => x._destroy == true);
+                foreach (Enemy enemy in enemies)
+                {
+                    enemy.Update(gameTime, _playerPosition);
+
+                    if (_player.Bounds.CollidesWith(enemy.Bounds))
+                    {
+                        ExitScreen();
+                        LoadingScreen.Load(ScreenManager, true, PlayerIndex.One, new GameScreen[] { new BackgroundScreen(), new MainMenuScreen() });
+                        MediaPlayer.Pause();
+                    }
+                }
                 foreach (BulletSprite bullet in _bullets)
                 {
                     bullet.Update(gameTime);
 
-                    /*
-                    if (_player.Bounds.CollidesWith(bullet.Bounds))
-                    {
-                        ExitScreen();
-                        LoadingScreen.Load(ScreenManager, true, PlayerIndex.One, new MainMenuScreen());
-                        MediaPlayer.Pause();
-                    }
-                    */
+                   
                     foreach (Enemy enemy in enemies)
                     {
-                        if (enemy.Bounds.CollidesWith(bullet.Bounds)) enemy.TakeDamage(_player.damage);
+                        if (enemy.Bounds.CollidesWith(bullet.Bounds))
+                        {
+                            enemy.TakeDamage(_player.damage);
+                            bullet._destroy = true;
+                        }
                     }
                 }
-                foreach (Enemy enemy in enemies)
-                {
-                    enemy.Update(gameTime, _playerPosition);                   
-                }
+                
 
             }
         }
