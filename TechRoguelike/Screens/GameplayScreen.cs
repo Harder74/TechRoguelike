@@ -47,7 +47,8 @@ namespace TechRoguelike.Screens
         private Texture2D _shot;
 
         private SoundEffect soundEffect;
-
+        private Vector2 MAX_VELOCITY = new Vector2(400, 400);
+        private Vector2 MIN_VELOCITY = new Vector2(-400, -400);
 
         public GameplayScreen()
         {
@@ -96,9 +97,10 @@ namespace TechRoguelike.Screens
                 {
                     MediaPlayer.Resume();
                 }
+                _bullets.RemoveAll(x => x._destroy == true);
                 foreach (BulletSprite bullet in _bullets)
                 {
-                    if (bullet._destroy == false) bullet.Update(gameTime);
+                    bullet.Update(gameTime);
                     
                     /*
                     if (_player.Bounds.CollidesWith(bullet.Bounds))
@@ -109,6 +111,7 @@ namespace TechRoguelike.Screens
                     }
                     */
                 }
+
                 
             }
         }
@@ -168,12 +171,17 @@ namespace TechRoguelike.Screens
                     }                  
                 }
                 //checks for player input to reset initial shot
-                if (keyboardState.IsKeyUp(Keys.Space)) _initialShot = false;
+                if (keyboardState.IsKeyUp(Keys.Space))
+                {
+                    _initialShot = false;
+                    fireRateTimer = 0;
+                }
 
                 //checks for player input for boost, and slows down player when not boosting
                 if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
                 {
                     _velocity += _direction * LINEAR_ACCELERATION * t;
+                    _velocity = Vector2.Clamp(_velocity, MIN_VELOCITY, MAX_VELOCITY);
                     _player.SetIsMoving(true);
                 }
                 else
