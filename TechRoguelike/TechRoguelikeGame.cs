@@ -29,6 +29,7 @@ namespace TechRoguelike
 
         private void AddInitialScreens()
         {
+            _screenManager.AddScreen(new BackgroundScreen(), null);
             _screenManager.AddScreen(new MainMenuScreen(), null);
         }
 

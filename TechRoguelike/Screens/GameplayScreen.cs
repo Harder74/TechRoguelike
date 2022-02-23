@@ -56,7 +56,7 @@ namespace TechRoguelike.Screens
             
             _pauseAction = new InputAction(
                 new[] { Buttons.Start, Buttons.Back },
-                new[] { Keys.Back }, true);
+                new[] { Keys.Back, Keys.Escape }, true);
 
         }
 
@@ -92,6 +92,10 @@ namespace TechRoguelike.Screens
             
             if (IsActive)
             {
+                if(MediaPlayer.State == MediaState.Paused)
+                {
+                    MediaPlayer.Resume();
+                }
                 foreach (BulletSprite bullet in _bullets)
                 {
                     if (bullet._destroy == false) bullet.Update(gameTime);
@@ -122,10 +126,12 @@ namespace TechRoguelike.Screens
             PlayerIndex player;
             if (_pauseAction.Occurred(input, ControllingPlayer, out player))
             {
-              //ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer);
+                ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer);
+                MediaPlayer.Pause();
             }
             else
             {
+                
                 float t = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
                 //adds rotation based on players input
@@ -234,7 +240,6 @@ namespace TechRoguelike.Screens
 
         public override void Draw(GameTime gameTime)
         {
-            ScreenManager.GraphicsDevice.Clear(ClearOptions.Target, Color.Black, 0, 0);
 
             // Our player and enemy are both actually just text strings.
             var spriteBatch = ScreenManager.SpriteBatch;

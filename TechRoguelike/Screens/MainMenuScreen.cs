@@ -26,7 +26,7 @@ namespace TechRoguelike.Screens
 
         private void PlayGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
-            LoadingScreen.Load(ScreenManager, true, e.PlayerIndex, new GameplayScreen());
+            LoadingScreen.Load(ScreenManager, true, e.PlayerIndex, new GameScreen[] { new BackgroundScreen(), new GameplayScreen()});
         }
 
         /*
@@ -34,7 +34,7 @@ namespace TechRoguelike.Screens
         {
             ScreenManager.AddScreen(new OptionsMenuScreen(), e.PlayerIndex);
         }
-
+        */
         protected override void OnCancel(PlayerIndex playerIndex)
         {
             const string message = "Are you sure you want to exit this sample?";
@@ -44,7 +44,7 @@ namespace TechRoguelike.Screens
 
             ScreenManager.AddScreen(confirmExitMessageBox, playerIndex);
         }
-        */
+     
         private void ConfirmExitMessageBoxAccepted(object sender, PlayerIndexEventArgs e)
         {
             ScreenManager.Game.Exit();
