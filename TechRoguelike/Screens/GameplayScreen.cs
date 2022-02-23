@@ -45,10 +45,13 @@ namespace TechRoguelike.Screens
         private Texture2D _texture;
         private Texture2D _testing;
         private Texture2D _shot;
+        private Texture2D yellowSquare;
 
         private SoundEffect soundEffect;
         private Vector2 MAX_VELOCITY = new Vector2(400, 400);
         private Vector2 MIN_VELOCITY = new Vector2(-400, -400);
+
+        private List<Enemy> enemies = new List<Enemy>();
 
         public GameplayScreen()
         {
@@ -77,7 +80,11 @@ namespace TechRoguelike.Screens
             _shot = _content.Load<Texture2D>("BasicShot");
             _testing = _content.Load<Texture2D>("ball");
             soundEffect = _content.Load<SoundEffect>("FullSweep");
-            SoundEffect.MasterVolume = .25f;    
+            yellowSquare = _content.Load<Texture2D>("YellowSquare");
+            SoundEffect.MasterVolume = .25f;
+
+
+            enemies.Add(new YellowSquare(new Vector2(-50, -50), yellowSquare));
         }
 
         // This method checks the GameScreen.IsActive property, so the game will
@@ -97,11 +104,12 @@ namespace TechRoguelike.Screens
                 {
                     MediaPlayer.Resume();
                 }
+                enemies.RemoveAll(x => x.IsDestroyed == true);
                 _bullets.RemoveAll(x => x._destroy == true);
                 foreach (BulletSprite bullet in _bullets)
                 {
                     bullet.Update(gameTime);
-                    
+
                     /*
                     if (_player.Bounds.CollidesWith(bullet.Bounds))
                     {
@@ -110,9 +118,16 @@ namespace TechRoguelike.Screens
                         MediaPlayer.Pause();
                     }
                     */
+                    foreach (Enemy enemy in enemies)
+                    {
+                        if (enemy.Bounds.CollidesWith(bullet.Bounds)) enemy.TakeDamage(_player.damage);
+                    }
+                }
+                foreach (Enemy enemy in enemies)
+                {
+                    enemy.Update(gameTime, _playerPosition);                   
                 }
 
-                
             }
         }
 
@@ -257,6 +272,7 @@ namespace TechRoguelike.Screens
             
             foreach (BulletSprite bullet in _bullets) bullet.Draw(gameTime, spriteBatch);
             _player.Draw(gameTime, spriteBatch);
+            foreach (Enemy enemy in enemies) enemy.Draw(gameTime, spriteBatch);
             spriteBatch.DrawString(_gameFont, _text, new Vector2(), Color.White, 0, new Vector2(-200,0), 1f, SpriteEffects.None, 0);
             spriteBatch.End();
 

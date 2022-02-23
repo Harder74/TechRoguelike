@@ -35,7 +35,7 @@ namespace TechRoguelike.Entities
         private int jumpAnimationFrame;
 
         private float _scale = 3f;
-
+        public float damage = 25f;
         
         private BoundingRectangle bounds = new BoundingRectangle(new Vector2(50, 50), 32,32);
         public BoundingRectangle Bounds => bounds;
@@ -54,7 +54,7 @@ namespace TechRoguelike.Entities
             _shipBasic = content.Load<Texture2D>("ShipBasic");
             _shipBoost1 = content.Load<Texture2D>("ShipBoost1");
             _shipBoost2 = content.Load<Texture2D>("ShipBoost2");
-           // _testing = content.Load<Texture2D>("ball");
+            //_testing = content.Load<Texture2D>("ball");
         }
 
         /// <summary>
