@@ -57,6 +57,7 @@ namespace TechRoguelike.Screens
             _pauseAction = new InputAction(
                 new[] { Buttons.Start, Buttons.Back },
                 new[] { Keys.Back }, true);
+
         }
 
         // Load graphics content for the game
@@ -93,8 +94,8 @@ namespace TechRoguelike.Screens
             {
                 foreach (BulletSprite bullet in _bullets)
                 {
-                    if(bullet._destroy == false) bullet.Update(gameTime);
-
+                    if (bullet._destroy == false) bullet.Update(gameTime);
+                    
                     /*
                     if (_player.Bounds.CollidesWith(bullet.Bounds))
                     {
