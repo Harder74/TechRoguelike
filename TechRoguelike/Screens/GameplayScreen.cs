@@ -19,7 +19,7 @@ namespace TechRoguelike.Screens
         private GameplayStates gameplayState = GameplayStates.Loading;
 
         private PlayerSprite _player;
-        private Vector2 _playerPosition = new Vector2(200, 200);
+        private Vector2 _playerPosition = new Vector2(400, 400);
         private Vector2 _velocity;
         private Vector2 _acceleration;
         private float _angularAcceleration;
@@ -88,7 +88,7 @@ namespace TechRoguelike.Screens
             SoundEffect.MasterVolume = .25f;
 
 
-            enemies.Add(new YellowSquare(new Vector2(-50, -50), yellowSquare));
+            
         }
 
         // This method checks the GameScreen.IsActive property, so the game will
@@ -133,7 +133,7 @@ namespace TechRoguelike.Screens
                         if (roundSwitchTimer > 5f)
                         {
                             gameplayState = GameplayStates.Start;
-                            roundSwitchTimer = 0;
+                            roundSwitchTimer = 0;                          
                         }
                         break;
                     case GameplayStates.Start:
@@ -142,6 +142,7 @@ namespace TechRoguelike.Screens
                         {
                             gameplayState = GameplayStates.During;
                             roundSwitchTimer = 0;
+                            enemies.Add(new YellowSquare(new Vector2(-50, -50), yellowSquare));
                         }
                         break;
                     case GameplayStates.During:
@@ -153,6 +154,11 @@ namespace TechRoguelike.Screens
                             {
                                 gameplayState = GameplayStates.Gameover;
                             }
+                        }
+                        if (enemies.Count == 0)
+                        {
+                            roundCount++;
+                            gameplayState = GameplayStates.Start;
                         }
                         break;
                     case GameplayStates.Gameover:
@@ -304,7 +310,7 @@ namespace TechRoguelike.Screens
             spriteBatch.Begin();
             if(gameplayState == GameplayStates.Loading)
             {
-                spriteBatch.DrawString(_gameFont, _text, new Vector2(), Color.White, 0, new Vector2(-25, -150), 1f, SpriteEffects.None, 0);
+                spriteBatch.DrawString(_gameFont, _text, new Vector2(), Color.White, 0, new Vector2(-25, -100), 1f, SpriteEffects.None, 0);
             }
             else if(gameplayState == GameplayStates.Start)
             {
