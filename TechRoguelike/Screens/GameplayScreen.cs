@@ -16,6 +16,7 @@ namespace TechRoguelike.Screens
         private Random random = new Random();
         private ContentManager _content;
         private SpriteFont _gameFont;
+        private GameplayStates gameplayState = GameplayStates.Loading;
 
         private PlayerSprite _player;
         private Vector2 _playerPosition = new Vector2(200, 200);
@@ -40,6 +41,7 @@ namespace TechRoguelike.Screens
 
         private const float FIRE_RATE = .5f;
         private double fireRateTimer;
+        private double roundSwitchTimer;
         private bool _initialShot = false;
 
         private Texture2D _texture;
@@ -52,6 +54,8 @@ namespace TechRoguelike.Screens
         private Vector2 MIN_VELOCITY = new Vector2(-400, -400);
 
         private List<Enemy> enemies = new List<Enemy>();
+
+        private int roundCount = 1;
 
         public GameplayScreen()
         {
@@ -106,17 +110,7 @@ namespace TechRoguelike.Screens
                 }
                 enemies.RemoveAll(x => x.IsDestroyed == true);
                 _bullets.RemoveAll(x => x._destroy == true);
-                foreach (Enemy enemy in enemies)
-                {
-                    enemy.Update(gameTime, _playerPosition);
-
-                    if (_player.Bounds.CollidesWith(enemy.Bounds))
-                    {
-                        ExitScreen();
-                        LoadingScreen.Load(ScreenManager, true, PlayerIndex.One, new GameScreen[] { new BackgroundScreen(), new MainMenuScreen() });
-                        MediaPlayer.Pause();
-                    }
-                }
+               
                 foreach (BulletSprite bullet in _bullets)
                 {
                     bullet.Update(gameTime);
@@ -131,8 +125,42 @@ namespace TechRoguelike.Screens
                         }
                     }
                 }
-                
+                roundSwitchTimer += gameTime.ElapsedGameTime.TotalSeconds;
 
+                switch (gameplayState)
+                {
+                    case GameplayStates.Loading:
+                        if (roundSwitchTimer > 5f)
+                        {
+                            gameplayState = GameplayStates.Start;
+                            roundSwitchTimer = 0;
+                        }
+                        break;
+                    case GameplayStates.Start:
+                       
+                        if (roundSwitchTimer > 5f)
+                        {
+                            gameplayState = GameplayStates.During;
+                            roundSwitchTimer = 0;
+                        }
+                        break;
+                    case GameplayStates.During:
+                        foreach (Enemy enemy in enemies)
+                        {
+                            enemy.Update(gameTime, _playerPosition);
+
+                            if (_player.Bounds.CollidesWith(enemy.Bounds))
+                            {
+                                gameplayState = GameplayStates.Gameover;
+                            }
+                        }
+                        break;
+                    case GameplayStates.Gameover:
+                        ExitScreen();
+                        LoadingScreen.Load(ScreenManager, true, PlayerIndex.One, new GameScreen[] { new BackgroundScreen(), new MainMenuScreen() });
+                        MediaPlayer.Pause();
+                        break;
+                }
             }
         }
 
@@ -271,14 +299,21 @@ namespace TechRoguelike.Screens
 
             // Our player and enemy are both actually just text strings.
             var spriteBatch = ScreenManager.SpriteBatch;
-            var _text = "Dodge bullets using W, A, S, D, to survive the game.";
+            var _text = "Use W to boost, A & D to turn, and Space to shoot";
+            var round = $"Round {roundCount}";
             spriteBatch.Begin();
-
-            
+            if(gameplayState == GameplayStates.Loading)
+            {
+                spriteBatch.DrawString(_gameFont, _text, new Vector2(), Color.White, 0, new Vector2(-25, -150), 1f, SpriteEffects.None, 0);
+            }
+            else if(gameplayState == GameplayStates.Start)
+            {
+                spriteBatch.DrawString(_gameFont, round, new Vector2(), Color.White, 0, new Vector2(-350, -100), 1f, SpriteEffects.None, 0);
+            }
             foreach (BulletSprite bullet in _bullets) bullet.Draw(gameTime, spriteBatch);
             _player.Draw(gameTime, spriteBatch);
             foreach (Enemy enemy in enemies) enemy.Draw(gameTime, spriteBatch);
-            spriteBatch.DrawString(_gameFont, _text, new Vector2(), Color.White, 0, new Vector2(-200,0), 1f, SpriteEffects.None, 0);
+            
             spriteBatch.End();
 
             // If the game is transitioning on or off, fade it out to black.
