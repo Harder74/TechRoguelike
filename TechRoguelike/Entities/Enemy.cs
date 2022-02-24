@@ -18,8 +18,8 @@ namespace TechRoguelike.Entities
         public Vector2 LinearVelocity;
         public float LinearAcceleration;
         public Vector2 Direction;
-        public Vector2 MAX_VELOCITY = new Vector2(200, 200);
-        public Vector2 MIN_VELOCITY = new Vector2(-200, -200);
+        public Vector2 MAX_VELOCITY = new Vector2(225, 225);
+        public Vector2 MIN_VELOCITY = new Vector2(-225, -225);
 
         public abstract void Update(GameTime gameTime, Vector2 playerPos);
         public abstract void Draw(GameTime gameTime, SpriteBatch spriteBatch);

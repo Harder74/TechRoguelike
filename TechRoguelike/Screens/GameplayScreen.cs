@@ -248,21 +248,21 @@ namespace TechRoguelike.Screens
                 }
                 else
                 {
-                    if(_velocity.X > 10f)
+                    if(_velocity.X > 25f)
                     {
                         _velocity.X -= 100f * t;
                     }
-                    else if (_velocity.X < -10f)
+                    else if (_velocity.X < -25f)
                     {
                         _velocity.X += 100f * t;
                     }
                     
 
-                    if (_velocity.Y > 10f)
+                    if (_velocity.Y > 25f)
                     {
                         _velocity.Y -= 100f * t;
                     }
-                    else if (_velocity.Y < -10f)
+                    else if (_velocity.Y < -25f)
                     {
                         _velocity.Y += 100f * t;
                     }
