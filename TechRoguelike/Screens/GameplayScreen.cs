@@ -24,7 +24,7 @@ namespace TechRoguelike.Screens
         private Vector2 _acceleration;
         private float _angularAcceleration;
         private Vector2 _direction;
-        const float LINEAR_ACCELERATION = 150;
+        const float LINEAR_ACCELERATION = 250;
         const float ANGULAR_ACCELERATION = 12;
 
         float angle;
@@ -56,6 +56,7 @@ namespace TechRoguelike.Screens
         private List<Enemy> enemies = new List<Enemy>();
 
         private int roundCount = 1;
+        
 
         public GameplayScreen()
         {
@@ -131,18 +132,23 @@ namespace TechRoguelike.Screens
                 {
                     case GameplayStates.Loading:
                         if (roundSwitchTimer > 5f)
-                        {
+                        {                           
+                            roundSwitchTimer = 0;
                             gameplayState = GameplayStates.Start;
-                            roundSwitchTimer = 0;                          
                         }
                         break;
                     case GameplayStates.Start:
                        
                         if (roundSwitchTimer > 5f)
                         {
+                            for (int i = 0; i < roundCount; i++)
+                            {
+                                float x = (float)random.NextDouble() * -100 - 50;
+                                float y = (float)random.NextDouble() * 480;
+                                enemies.Add(new YellowSquare(new Vector2(x, y), yellowSquare));
+                            }
+                            roundSwitchTimer = 0;                    
                             gameplayState = GameplayStates.During;
-                            roundSwitchTimer = 0;
-                            enemies.Add(new YellowSquare(new Vector2(-50, -50), yellowSquare));
                         }
                         break;
                     case GameplayStates.During:
@@ -160,6 +166,8 @@ namespace TechRoguelike.Screens
                             roundCount++;
                             gameplayState = GameplayStates.Start;
                         }
+                        break;
+                    case GameplayStates.End:                     
                         break;
                     case GameplayStates.Gameover:
                         ExitScreen();
