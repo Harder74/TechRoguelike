@@ -73,7 +73,7 @@ namespace TechRoguelike.Screens
             }
         }
 
-        public override void Draw(GameTime gameTime)
+        public override void Draw(GameTime gameTime, Matrix transform)
         {
             var spriteBatch = ScreenManager.SpriteBatch;
             var font = ScreenManager.Font;
@@ -96,7 +96,7 @@ namespace TechRoguelike.Screens
 
             var color = Color.White * TransitionAlpha;    // Fade the popup alpha during transitions
 
-            spriteBatch.Begin();
+            spriteBatch.Begin(transformMatrix: transform);
 
             spriteBatch.Draw(_gradientTexture, backgroundRectangle, color);
             spriteBatch.DrawString(font, _message, textPosition, color);

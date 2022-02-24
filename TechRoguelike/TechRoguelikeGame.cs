@@ -6,22 +6,36 @@ using TechRoguelike.StateManagement;
 
 namespace TechRoguelike
 {
+    public enum DisplayStrategy
+    {
+        ScaleToFit,
+        ScaleToCover
+    }
+
+    public enum GameResolution
+    {
+        FourToThree,
+        SixteenToNine
+    }
+
     public class TechRoguelikeGame : Game
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private readonly ScreenManager _screenManager;
+        
 
         public TechRoguelikeGame()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            
 
             var screenFactory = new ScreenFactory();
             Services.AddService(typeof(IScreenFactory), screenFactory);
 
-            _screenManager = new ScreenManager(this);
+            _screenManager = new ScreenManager(this, _graphics);
             Components.Add(_screenManager);
 
             AddInitialScreens();
@@ -35,8 +49,7 @@ namespace TechRoguelike
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
+            
             base.Initialize();
         }
 
@@ -61,5 +74,7 @@ namespace TechRoguelike
 
             base.Draw(gameTime);
         }
+
+        
     }
 }

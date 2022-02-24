@@ -70,7 +70,7 @@ namespace TechRoguelike.Screens
             }
         }
 
-        public override void Draw(GameTime gameTime)
+        public override void Draw(GameTime gameTime, Matrix transform)
         {
             // If we are the only active screen, that means all the previous screens
             // must have finished transitioning off. We check for this in the Draw
@@ -102,7 +102,7 @@ namespace TechRoguelike.Screens
                 var color = Color.White * TransitionAlpha;
 
                 // Draw the text.
-                spriteBatch.Begin();
+                spriteBatch.Begin(transformMatrix: transform);
                 spriteBatch.DrawString(font, message, textPosition, color);
                 spriteBatch.End();
             }

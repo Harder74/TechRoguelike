@@ -102,14 +102,14 @@ namespace TechRoguelike.Screens
             float transitionOffset = (float)Math.Pow(TransitionPosition, 2);
 
             // start at Y = 175; each X value is generated per entry
-            var position = new Vector2(0f, 175f);
+            var position = new Vector2(0f, ScreenManager.GraphicsDevice.Viewport.Height / 2);
 
             // update each menu entry's location in turn
             foreach (var menuEntry in _menuEntries)
             {
                 // each entry is to be centered horizontally
                 position.X = ScreenManager.GraphicsDevice.Viewport.Width / 2 - menuEntry.GetWidth(this) / 2;
-
+                
                 if (ScreenState == ScreenState.TransitionOn)
                     position.X -= transitionOffset * 256;
                 else
@@ -135,7 +135,7 @@ namespace TechRoguelike.Screens
             }
         }
 
-        public override void Draw(GameTime gameTime)
+        public override void Draw(GameTime gameTime, Matrix transform)
         {
             // make sure our entries are in the right place before we draw them
             UpdateMenuEntryLocations();
@@ -144,7 +144,7 @@ namespace TechRoguelike.Screens
             var spriteBatch = ScreenManager.SpriteBatch;
             var font = ScreenManager.Font;
 
-            spriteBatch.Begin();
+            spriteBatch.Begin(transformMatrix: transform);
 
             for (int i = 0; i < _menuEntries.Count; i++)
             {
@@ -159,7 +159,7 @@ namespace TechRoguelike.Screens
             float transitionOffset = (float)Math.Pow(TransitionPosition, 2);
 
             // Draw the menu title centered on the screen
-            var titlePosition = new Vector2(graphics.Viewport.Width / 2, 80);
+            var titlePosition = new Vector2(graphics.Viewport.Width / 2, graphics.Viewport.Height / 2 - 100);
             var titleOrigin = font.MeasureString(_menuTitle) / 2;
             var titleColor = new Color(192, 192, 192) * TransitionAlpha;
             const float titleScale = 1.25f;

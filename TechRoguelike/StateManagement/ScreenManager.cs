@@ -20,7 +20,14 @@ namespace TechRoguelike.StateManagement
         private readonly ContentManager _content;
         private readonly InputState _input = new InputState();
 
+        private GraphicsDeviceManager _graphics;
         private bool _isInitialized;
+        private DisplayStrategy _displayStrategy;
+        private GameResolution _gameResolution;
+        private Texture2D _standard;
+        private Texture2D _widescreen;
+        private float _gameScale;
+        private Vector2 _gameOffset;
 
         /// <summary>
         /// A SpriteBatch shared by all GameScreens
@@ -41,10 +48,15 @@ namespace TechRoguelike.StateManagement
         /// Constructs a new ScreenManager
         /// </summary>
         /// <param name="game">The game this ScreenManager belongs to</param>
-        public ScreenManager(Game game) : base(game)
+        public ScreenManager(Game game, GraphicsDeviceManager gdm) : base(game)
         {
+            _graphics = gdm;
             _content = new ContentManager(game.Services, "Content");
-            
+            DisplayMode screen = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode;
+            _graphics.IsFullScreen = true;
+            _graphics.PreferredBackBufferWidth = screen.Width;
+            _graphics.PreferredBackBufferHeight = screen.Height;
+            _graphics.ApplyChanges();
         }
 
         /// <summary>
@@ -53,6 +65,11 @@ namespace TechRoguelike.StateManagement
         public override void Initialize()
         {
             base.Initialize();
+            // TODO: Add your initialization logic here
+            _gameResolution = GameResolution.SixteenToNine;
+            _displayStrategy = DisplayStrategy.ScaleToCover;
+            DetermineScreenSize();
+
             _isInitialized = true;
         }
 
@@ -130,11 +147,15 @@ namespace TechRoguelike.StateManagement
         /// <param name="gameTime">An object representing time in the game</param>
         public override void Draw(GameTime gameTime)
         {
+            // Determine the necessary transform to scale and position game on-screen
+            Matrix transform =
+                Matrix.CreateScale(_gameScale) * // Scale the game to screen size 
+                Matrix.CreateTranslation(_gameOffset.X, _gameOffset.Y, 0); // Translate game to letterbox position
             foreach (var screen in _screens)
             {
                 if (screen.ScreenState == ScreenState.Hidden) continue;
 
-                screen.Draw(gameTime);
+                screen.Draw(gameTime, transform);
             }
         }
 
@@ -188,6 +209,74 @@ namespace TechRoguelike.StateManagement
         public bool Activate()
         {
             return false;
+        }
+
+        public void DetermineScreenSize()
+        {
+            Viewport screen = _graphics.GraphicsDevice.Viewport;
+            Viewport game;
+
+            // Determine game size based on selected resolution
+            switch (_gameResolution)
+            {
+                case GameResolution.FourToThree:
+                    game = new Viewport(0, 0, 1024, 768);
+                    break;
+                case GameResolution.SixteenToNine:
+                default:
+                    game = new Viewport(0, 0, 1920, 1080);
+                    break;
+            }
+
+            // Determine game viewport scaling and positioning based on selected display strategy
+
+            switch (_displayStrategy)
+            {
+                case DisplayStrategy.ScaleToFit:
+                    // 1. Determine which dimension must have letterboxing
+                    if (screen.AspectRatio < game.AspectRatio)
+                    {
+                        // letterbox vertically
+                        // Scale game to screen width
+                        _gameScale = (float)screen.Width / game.Width;
+                        // translate vertically
+                        _gameOffset.Y = (screen.Height - game.Height * _gameScale) / 2f;
+                        _gameOffset.X = 0;
+                    }
+                    else
+                    {
+                        // letterbox horizontally
+                        // Scale game to screen height 
+                        _gameScale = (float)screen.Height / game.Height;
+                        // translate horizontally
+                        _gameOffset.X = (screen.Width - game.Width * _gameScale) / 2f;
+                        _gameOffset.Y = 0;
+                    }
+                    break;
+
+                case DisplayStrategy.ScaleToCover:
+                    // 1. Determine which dimension must overflow screen 
+                    if (screen.AspectRatio < game.AspectRatio)
+                    {
+                        // overflow horizontally
+                        // Scale game to screen height 
+                        _gameScale = (float)screen.Height / game.Height;
+                        // translate horizontally 
+                        _gameOffset.X = (screen.Width - game.Width * _gameScale) / 2f;
+                        _gameOffset.Y = 0;
+                    }
+                    else
+                    {
+                        // overflow vertically
+                        // Scale game to screen width 
+                        _gameScale = (float)screen.Width / game.Width;
+                        // translate vertically
+                        _gameOffset.Y = (screen.Height - game.Height * _gameScale) / 2f;
+                        _gameOffset.X = 0;
+                    }
+                    break;
+            }
+
         }
     }
 }

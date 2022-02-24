@@ -248,42 +248,36 @@ namespace TechRoguelike.Screens
                 }
                 else
                 {
-                    if(_velocity.X > 0)
+                    if(_velocity.X > 10f)
                     {
                         _velocity.X -= 100f * t;
                     }
-                    else if (_velocity.X < 0)
+                    else if (_velocity.X < -10f)
                     {
                         _velocity.X += 100f * t;
                     }
-                    else
-                    {
-                        _velocity.X = 0f;
-                    }
+                    
 
-                    if (_velocity.Y > 0)
+                    if (_velocity.Y > 10f)
                     {
                         _velocity.Y -= 100f * t;
                     }
-                    else if (_velocity.Y < 0)
+                    else if (_velocity.Y < -10f)
                     {
                         _velocity.Y += 100f * t;
                     }
-                    else
-                    {
-                        _velocity.Y = 0f;
-                    }
+                    
                     _player.SetIsMoving(false);
                 }
 
                 //checks if player has stopped inputing a rotation to slow the rotation
                 if(keyboardState.IsKeyUp(Keys.A) && keyboardState.IsKeyUp(Keys.D) && angularVelocity != 0f)
                 {
-                    if (angularVelocity > 0)
+                    if (angularVelocity > 0f)
                     {
                         angularVelocity -= 5f * t;
                     }
-                    if(angularVelocity < 0)
+                    if(angularVelocity < 0f)
                     {
                         angularVelocity += 5f * t;
                     }
@@ -308,21 +302,30 @@ namespace TechRoguelike.Screens
             }
         }
 
-        public override void Draw(GameTime gameTime)
+        public override void Draw(GameTime gameTime, Matrix transform)
         {
-
+            var font = ScreenManager.Font;
             // Our player and enemy are both actually just text strings.
             var spriteBatch = ScreenManager.SpriteBatch;
             var _text = "Use W to boost, A & D to turn, and Space to shoot";
             var round = $"Round {roundCount}";
-            spriteBatch.Begin();
+            var viewport = ScreenManager.GraphicsDevice.Viewport;
+            var viewportSize = new Vector2(viewport.Width, viewport.Height);
+            
+            spriteBatch.Begin(transformMatrix: transform);
             if(gameplayState == GameplayStates.Loading)
             {
-                spriteBatch.DrawString(_gameFont, _text, new Vector2(), Color.White, 0, new Vector2(-25, -100), 1f, SpriteEffects.None, 0);
+                var textSize = font.MeasureString(_text);
+                var textPosition = (viewportSize - textSize) / 2;
+                textPosition.Y = 100;
+                spriteBatch.DrawString(_gameFont, _text, textPosition, Color.White, 0, new Vector2(0,0), 1f, SpriteEffects.None, 0);
             }
             else if(gameplayState == GameplayStates.Start)
             {
-                spriteBatch.DrawString(_gameFont, round, new Vector2(), Color.White, 0, new Vector2(-350, -100), 1f, SpriteEffects.None, 0);
+                var textSize = font.MeasureString(round);
+                var textPosition = (viewportSize - textSize) / 2;
+                textPosition.Y= 100;
+                spriteBatch.DrawString(_gameFont, round, textPosition, Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
             }
             foreach (BulletSprite bullet in _bullets) bullet.Draw(gameTime, spriteBatch);
             _player.Draw(gameTime, spriteBatch);
