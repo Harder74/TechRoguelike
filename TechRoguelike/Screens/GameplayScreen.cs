@@ -126,11 +126,12 @@ namespace TechRoguelike.Screens
                         }
                     }
                 }
-                roundSwitchTimer += gameTime.ElapsedGameTime.TotalSeconds;
+                
 
                 switch (gameplayState)
                 {
                     case GameplayStates.Loading:
+                        roundSwitchTimer += gameTime.ElapsedGameTime.TotalSeconds;
                         if (roundSwitchTimer > 5f)
                         {                           
                             roundSwitchTimer = 0;
@@ -138,7 +139,7 @@ namespace TechRoguelike.Screens
                         }
                         break;
                     case GameplayStates.Start:
-                       
+                        roundSwitchTimer += gameTime.ElapsedGameTime.TotalSeconds;
                         if (roundSwitchTimer > 5f)
                         {
                             for (int i = 0; i < roundCount; i++)

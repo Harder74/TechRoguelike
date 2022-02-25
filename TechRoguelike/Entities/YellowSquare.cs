@@ -26,10 +26,10 @@ namespace TechRoguelike.Entities
             Direction = Vector2.Normalize(playerPos - (Position));
             LinearVelocity += Direction * LinearAcceleration * t;
             LinearVelocity = Vector2.Clamp(LinearVelocity, MIN_VELOCITY, MAX_VELOCITY);
-            if (LinearVelocity.X > 170) LinearVelocity.X -= 20f;
-            if (LinearVelocity.X < -170) LinearVelocity.X += 20f;
-            if (LinearVelocity.Y < -170) LinearVelocity.Y += 20f;
-            if (LinearVelocity.Y > 170) LinearVelocity.Y -= 20f;
+            if (LinearVelocity.X > 200) LinearVelocity.X -= 25f;
+            if (LinearVelocity.X < -200) LinearVelocity.X += 25f;
+            if (LinearVelocity.Y < -200) LinearVelocity.Y += 25f;
+            if (LinearVelocity.Y > 200) LinearVelocity.Y -= 25f;
             Position += LinearVelocity * t;
             Bounds.X = Position.X - 16;
             Bounds.Y = Position.Y - 16;
