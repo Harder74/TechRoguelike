@@ -26,6 +26,7 @@ namespace TechRoguelike.Screens
         private Vector2 _direction;
         const float LINEAR_ACCELERATION = 250;
         const float ANGULAR_ACCELERATION = 12;
+        //private List<IBounds> collisionObjects;
 
         float angle;
         float angularVelocity;
@@ -56,7 +57,9 @@ namespace TechRoguelike.Screens
         private List<Enemy> enemies = new List<Enemy>();
 
         private int roundCount = 1;
-        
+        private Texture2D topHealth;
+        private Texture2D bottomHealth;
+
 
         public GameplayScreen()
         {
@@ -77,6 +80,7 @@ namespace TechRoguelike.Screens
     
             _player = new PlayerSprite(_playerPosition);
             _player.LoadContent(_content);
+            //collisionObjects.Add((IBounds)_player);
             _gameFont = _content.Load<SpriteFont>("gameplayfont");
             _fallingLeaves = _content.Load<Song>("FallingLeavesSong");
             MediaPlayer.Volume = .25f;
@@ -86,10 +90,12 @@ namespace TechRoguelike.Screens
             _testing = _content.Load<Texture2D>("ball");
             soundEffect = _content.Load<SoundEffect>("FullSweep");
             yellowSquare = _content.Load<Texture2D>("YellowSquare");
+            //topHealth = _content.Load<Texture2D>("TopLayerHealth");
+            //bottomHealth = _content.Load<Texture2D>("BottomLayerHealth");
             SoundEffect.MasterVolume = .25f;
 
+            ScreenManager.Game.ResetElapsedTime();
 
-            
         }
 
         // This method checks the GameScreen.IsActive property, so the game will
@@ -109,6 +115,7 @@ namespace TechRoguelike.Screens
                 {
                     MediaPlayer.Resume();
                 }
+                
                 enemies.RemoveAll(x => x.IsDestroyed == true);
                 _bullets.RemoveAll(x => x._destroy == true);
                
@@ -119,15 +126,15 @@ namespace TechRoguelike.Screens
                    
                     foreach (Enemy enemy in enemies)
                     {
-                        if (enemy.Bounds.CollidesWith(bullet.Bounds))
+                        if (enemy.BoundingRectangle.CollidesWith(bullet.BoundingRectangle))
                         {
-                            enemy.TakeDamage(_player.damage);
+                            enemy.TakeDamage(_player.Damage);
                             bullet._destroy = true;
                         }
                     }
                 }
                 
-
+                
                 switch (gameplayState)
                 {
                     case GameplayStates.Loading:
@@ -146,21 +153,30 @@ namespace TechRoguelike.Screens
                             {
                                 float x = (float)random.NextDouble() * -100 - 50;
                                 float y = (float)random.NextDouble() * 480;
-                                enemies.Add(new YellowSquare(new Vector2(x, y), yellowSquare));
+                                var temp = new YellowSquare(new Vector2(x, y), yellowSquare);
+                                enemies.Add(temp);
+                                //collisionObjects.Add((IBounds)temp);
                             }
                             roundSwitchTimer = 0;                    
                             gameplayState = GameplayStates.During;
                         }
                         break;
                     case GameplayStates.During:
+                        
                         foreach (Enemy enemy in enemies)
                         {
                             enemy.Update(gameTime, _playerPosition);
 
-                            if (_player.Bounds.CollidesWith(enemy.Bounds))
+                            if (_player.BoundingRectangle.CollidesWith(enemy.BoundingRectangle))
                             {
-                                gameplayState = GameplayStates.Gameover;
+                                _player.TakeDamage(enemy.RamDamage);
                             }
+                        }
+                        
+                        
+                        if (_player.Health <= 0)
+                        {
+                            gameplayState = GameplayStates.Gameover;
                         }
                         if (enemies.Count == 0)
                         {
@@ -223,13 +239,17 @@ namespace TechRoguelike.Screens
                     if (!_initialShot)
                     {
                         soundEffect.Play();
-                        _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(_playerPosition.X, _playerPosition.Y), _shot, _direction, viewport, angle));
+                        var bullet = new BulletSprite(BulletType.Thick, new Vector2(_playerPosition.X, _playerPosition.Y), _shot, _direction, viewport, angle);
+                        _bullets.Add(bullet);
+                        //collisionObjects.Add(bullet);
                         _initialShot = true;
                     }
                     else if (fireRateTimer > FIRE_RATE)
                     {
                         soundEffect.Play();
-                        _bullets.Add(new BulletSprite(BulletType.Thick, new Vector2(_playerPosition.X, _playerPosition.Y), _shot, _direction, viewport, angle));
+                        var bullet = new BulletSprite(BulletType.Thick, new Vector2(_playerPosition.X, _playerPosition.Y), _shot, _direction, viewport, angle);
+                        _bullets.Add(bullet);
+                        //collisionObjects.Add(bullet);
                         fireRateTimer = 0;
                     }                  
                 }
@@ -329,9 +349,9 @@ namespace TechRoguelike.Screens
                 spriteBatch.DrawString(_gameFont, round, textPosition, Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
             }
             foreach (BulletSprite bullet in _bullets) bullet.Draw(gameTime, spriteBatch);
-            _player.Draw(gameTime, spriteBatch);
+            _player.Draw(gameTime, spriteBatch, viewport);
             foreach (Enemy enemy in enemies) enemy.Draw(gameTime, spriteBatch);
-            
+           // spriteBatch.Draw(bottomHealth, new Vector2(viewport.Width / 2, viewport.Height - 12), Color.White);
             spriteBatch.End();
 
             // If the game is transitioning on or off, fade it out to black.

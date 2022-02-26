@@ -56,6 +56,7 @@ namespace TechRoguelike.StateManagement
             _graphics.IsFullScreen = true;
             _graphics.PreferredBackBufferWidth = screen.Width;
             _graphics.PreferredBackBufferHeight = screen.Height;
+            
             _graphics.ApplyChanges();
         }
 

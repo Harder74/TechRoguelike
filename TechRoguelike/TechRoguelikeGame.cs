@@ -30,7 +30,7 @@ namespace TechRoguelike
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-            
+            //_graphics.GraphicsProfile = GraphicsProfile.HiDef;
 
             var screenFactory = new ScreenFactory();
             Services.AddService(typeof(IScreenFactory), screenFactory);

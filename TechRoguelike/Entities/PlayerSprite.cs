@@ -16,6 +16,8 @@ namespace TechRoguelike.Entities
         private Texture2D _shipBoost1;
         private Texture2D _shipBoost2;
         private Texture2D _texture;
+       
+
         private Vector2 position;
         private bool _isMoving;
         private Vector2 _direction;
@@ -35,11 +37,25 @@ namespace TechRoguelike.Entities
         private int jumpAnimationFrame;
 
         private float _scale = 3f;
-        public float damage = 25f;
-        
+        public float Damage = 25f;
+        public float RamDamage = 50f;
+        public float Health = 100f;
+        private Texture2D topHealth;
+        private Texture2D bottomHealth;
+
         private BoundingRectangle bounds = new BoundingRectangle(new Vector2(50, 50), 32,32);
-        public BoundingRectangle Bounds => bounds;
-        
+        public BoundingRectangle BoundingRectangle
+        {
+            get { return bounds; }
+            set
+            {
+                if (!value.Equals(bounds))
+                {
+                    bounds = value;
+                }
+            }
+        }
+
         public Color Color { get; set; } = Color.White;
 
         public PlayerSprite(Vector2 pos)
@@ -54,6 +70,8 @@ namespace TechRoguelike.Entities
             _shipBasic = content.Load<Texture2D>("ShipBasic");
             _shipBoost1 = content.Load<Texture2D>("ShipBoost1");
             _shipBoost2 = content.Load<Texture2D>("ShipBoost2");
+            //topHealth = content.Load<Texture2D>("HealthTop");
+            //bottomHealth = content.Load<Texture2D>("HealthBottom");
             //_testing = content.Load<Texture2D>("ball");
         }
 
@@ -62,7 +80,7 @@ namespace TechRoguelike.Entities
         /// </summary>
         /// <param name="gameTime">The game time</param>
         /// <param name="spriteBatch">The spritebatch to render with</param>
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Viewport viewport)
         {
 
             if (_isMoving)
@@ -88,11 +106,12 @@ namespace TechRoguelike.Entities
                 */
                 spriteBatch.Draw(_shipBasic, position, null, Color, _rotation, new Vector2(16,16), _scale, SpriteEffects.None, 1);
             }
-            
-           /*
-            var rect = new Rectangle((int)this.Bounds.X, (int)this.Bounds.Y, (int)this.Bounds.Width, (int)this.Bounds.Height);
-            spriteBatch.Draw(_testing, rect, Color.White);
-           */
+            //spriteBatch.Draw(bottomHealth, new Vector2(viewport.Width / 2, viewport.Height - 12), Color.White);
+
+            /*
+             var rect = new Rectangle((int)this.Bounds.X, (int)this.Bounds.Y, (int)this.Bounds.Width, (int)this.Bounds.Height);
+             spriteBatch.Draw(_testing, rect, Color.White);
+            */
 
         }
         /// <summary>
@@ -127,6 +146,11 @@ namespace TechRoguelike.Entities
         public void SetRotation(float angle)
         {
             _rotation = angle;
+        }
+
+        public void TakeDamage(float damage)
+        {
+            Health -= Damage;
         }
     }
 }

@@ -16,7 +16,8 @@ namespace TechRoguelike.Entities
             Texture = texture;
             LinearAcceleration = 450f;
             Scale = 2f;
-            Bounds = new BoundingRectangle(new Vector2(50, 50), 32, 32);
+            bounds = new BoundingRectangle(new Vector2(50, 50), 32, 32);
+            RamDamage = 25f;
         }
 
         public override void Update(GameTime gameTime, Vector2 playerPos)
@@ -31,8 +32,8 @@ namespace TechRoguelike.Entities
             if (LinearVelocity.Y < -200) LinearVelocity.Y += 25f;
             if (LinearVelocity.Y > 200) LinearVelocity.Y -= 25f;
             Position += LinearVelocity * t;
-            Bounds.X = Position.X - 16;
-            Bounds.Y = Position.Y - 16;
+            bounds.X = Position.X - 16;
+            bounds.Y = Position.Y - 16;
             
 
         }

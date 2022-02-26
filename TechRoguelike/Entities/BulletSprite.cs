@@ -8,7 +8,8 @@ using TechRoguelike.Collisions;
 
 namespace TechRoguelike.Entities
 {
-    public class BulletSprite
+
+    public class BulletSprite : IBounds
     {
         private BulletType _bulletType;
 
@@ -25,7 +26,17 @@ namespace TechRoguelike.Entities
         private float _rotation;
 
         private BoundingRectangle bounds = new BoundingRectangle(new Vector2(50, 50), 16, 16);
-        public BoundingRectangle Bounds => bounds;
+        public BoundingRectangle BoundingRectangle
+        {
+            get { return bounds; }
+            set
+            {
+                if(!value.Equals(bounds))
+                {
+                    bounds = value;
+                }
+            }
+        }
 
         public BulletSprite(BulletType bulletType, Vector2 pos, Texture2D shot, Vector2 dir, Viewport view, float rotation)
         {
