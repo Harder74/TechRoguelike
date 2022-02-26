@@ -332,8 +332,8 @@ namespace TechRoguelike.Screens
             var round = $"Round {roundCount}";
             var viewport = ScreenManager.GraphicsDevice.Viewport;
             var viewportSize = new Vector2(viewport.Width, viewport.Height);
-            
-            spriteBatch.Begin(transformMatrix: transform);
+            spriteBatch.Begin();
+            //spriteBatch.Begin(transformMatrix: transform);
             if(gameplayState == GameplayStates.Loading)
             {
                 var textSize = font.MeasureString(_text);
