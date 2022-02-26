@@ -118,10 +118,10 @@ namespace TechRoguelike.Screens
                 {
                     MediaPlayer.Resume();
                 }
-                
+                /*
                 enemies.RemoveAll(x => x.IsDestroyed == true);
                 _bullets.RemoveAll(x => x._destroy == true);
-
+                
                 foreach (BulletSprite bullet in _bullets)
                 {
                     bullet.Update(gameTime);
@@ -136,7 +136,29 @@ namespace TechRoguelike.Screens
                         }
                     }
                 }
-                
+                */
+
+                for(int i = 0; i < _bullets.Count; i++)
+                {
+                    _bullets[i].Update(gameTime);
+                    for(int j = 0; j < enemies.Count; j++)
+                    {
+                        if (enemies[j].BoundingRectangle.CollidesWith(_bullets[i].BoundingRectangle))
+                        {
+                            enemies[j].TakeDamage(_player.Damage);
+                            _bullets[i]._destroy = true;
+                        }
+                        if (enemies[j].IsDestroyed)
+                        {
+                            enemies.RemoveAt(j);
+                        }
+                    }
+
+                    if (_bullets[i]._destroy)
+                    {
+                        _bullets.RemoveAt(i);
+                    }
+                }
                 
                 switch (gameplayState)
                 {
