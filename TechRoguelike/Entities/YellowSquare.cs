@@ -11,7 +11,7 @@ namespace TechRoguelike.Entities
 
         public YellowSquare(Vector2 pos, Texture2D texture)
         {
-            Health = 50;
+            Health = 25;
             Position = pos;
             Texture = texture;
             LinearAcceleration = 450f;

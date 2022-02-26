@@ -39,9 +39,12 @@ namespace TechRoguelike.Entities
         private float _scale = 3f;
         public float Damage = 25f;
         public float RamDamage = 50f;
-        public float Health = 100f;
+        public float Health = 200f;
+        public float MAX_HEALTH = 200f;
         private Texture2D topHealth;
         private Texture2D bottomHealth;
+
+        public bool BeenHit = false;
 
         private BoundingRectangle bounds = new BoundingRectangle(new Vector2(50, 50), 32,32);
         public BoundingRectangle BoundingRectangle
