@@ -62,7 +62,7 @@ namespace TechRoguelike.Screens
 
         private double invincibleTimer;
         private float score;
-        private Viewport viewport;
+
 
         public GameplayScreen()
         {
@@ -73,8 +73,8 @@ namespace TechRoguelike.Screens
                 new[] { Buttons.Start, Buttons.Back },
                 new[] { Keys.Back, Keys.Escape }, true);
 
-            viewport = ScreenManager.Game.GraphicsDevice.Viewport;
-
+            
+            
 
         }
 
@@ -126,6 +126,7 @@ namespace TechRoguelike.Screens
                 
                 enemies.RemoveAll(x => x.IsDestroyed == true);
                 _bullets.RemoveAll(x => x._destroy == true);
+                var viewport = ScreenManager.Game.GraphicsDevice.Viewport;
                 foreach (BulletSprite bullet in _bullets)
                 {
                     bullet.Update(gameTime);
@@ -161,11 +162,40 @@ namespace TechRoguelike.Screens
                         {
                             for (int i = 0; i < roundCount; i++)
                             {
-                                
+                                int updown = random.Next(0, 2);
                                 float x = (float)random.NextDouble() * viewport.Width;
                                 float y = (float)random.NextDouble() * viewport.Height;
-
-                                var tempVec = DetermineEnemySpawn(x, y);
+                                if (x < viewport.Width && x > viewport.X)
+                                {
+                                    if(y > viewport.Y && y < viewport.Height && updown == 0)
+                                    {
+                                        x = Math.Clamp(x, -256, -32);
+                                    }
+                                    else if(y > viewport.Y && y < viewport.Height && updown == 1)
+                                    {
+                                        y = Math.Clamp(y, viewport.Y - 256, viewport.Y - 32);
+                                    }
+                                    else
+                                    {
+                                        y = Math.Clamp(y, viewport.Height + 32, viewport.Height + 256);
+                                    }
+                                }
+                                else
+                                {
+                                    if (y > viewport.Y && y < viewport.Height && updown == 0)
+                                    {
+                                        x = Math.Clamp(x, viewport.Width + 32, viewport.Width + 256);
+                                    }
+                                    else if (y > viewport.Y && y < viewport.Height && updown == 1)
+                                    {
+                                        y = Math.Clamp(y, viewport.Y - 256, viewport.Y - 32);
+                                    }
+                                    else
+                                    {
+                                        y = Math.Clamp(y, viewport.Height + 32, viewport.Height + 256);
+                                    }
+                                }
+                                var tempVec = new Vector2(x, y);
                                 var temp = new YellowSquare(tempVec, yellowSquare, roundCount);
                                 enemies.Add(temp);
                                 //collisionObjects.Add((IBounds)temp);
@@ -408,42 +438,6 @@ namespace TechRoguelike.Screens
             }
         }
 
-        public Vector2 DetermineEnemySpawn(float x, float y)
-        {
-
-            int updown = random.Next(0, 2);
-            if (x < viewport.Width && x > viewport.X)
-            {
-                if (y > viewport.Y && y < viewport.Height && updown == 0)
-                {
-                    x = Math.Clamp(x, -256, -32);
-                }
-                else if (y > viewport.Y && y < viewport.Height && updown == 1)
-                {
-                    y = Math.Clamp(y, viewport.Y - 256, viewport.Y - 32);
-                }
-                else
-                {
-                    y = Math.Clamp(y, viewport.Height + 32, viewport.Height + 256);
-                }
-            }
-            else
-            {
-                if (y > viewport.Y && y < viewport.Height && updown == 0)
-                {
-                    x = Math.Clamp(x, viewport.Width + 32, viewport.Width + 256);
-                }
-                else if (y > viewport.Y && y < viewport.Height && updown == 1)
-                {
-                    y = Math.Clamp(y, viewport.Y - 256, viewport.Y - 32);
-                }
-                else
-                {
-                    y = Math.Clamp(y, viewport.Height + 32, viewport.Height + 256);
-                }
-            }
-
-            return new Vector2(x, y);
-        }
+        
     }
 }
