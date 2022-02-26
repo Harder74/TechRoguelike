@@ -90,8 +90,8 @@ namespace TechRoguelike.Screens
             _testing = _content.Load<Texture2D>("ball");
             soundEffect = _content.Load<SoundEffect>("FullSweep");
             yellowSquare = _content.Load<Texture2D>("YellowSquare");
-            //topHealth = _content.Load<Texture2D>("TopLayerHealth");
-            //bottomHealth = _content.Load<Texture2D>("BottomLayerHealth");
+            //topHealth = _content.Load<Texture2D>("HealthTop");
+            bottomHealth = _content.Load<Texture2D>("HealthBottom");
             SoundEffect.MasterVolume = .25f;
 
             ScreenManager.Game.ResetElapsedTime();
