@@ -323,7 +323,7 @@ namespace TechRoguelike.Screens
             }
         }
 
-        public override void Draw(GameTime gameTime, Matrix transform)
+        public override void Draw(GameTime gameTime)
         {
             var font = ScreenManager.Font;
             // Our player and enemy are both actually just text strings.
@@ -333,7 +333,7 @@ namespace TechRoguelike.Screens
             var viewport = ScreenManager.GraphicsDevice.Viewport;
             var viewportSize = new Vector2(viewport.Width, viewport.Height);
             spriteBatch.Begin();
-            //spriteBatch.Begin(transformMatrix: transform);
+            
             if(gameplayState == GameplayStates.Loading)
             {
                 var textSize = font.MeasureString(_text);

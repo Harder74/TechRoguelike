@@ -46,13 +46,13 @@ namespace TechRoguelike.Screens
             base.Update(gameTime, otherScreenHasFocus, false);
         }
 
-        public override void Draw(GameTime gameTime, Matrix transform)
+        public override void Draw(GameTime gameTime)
         {
             var spriteBatch = ScreenManager.SpriteBatch;
             var viewport = ScreenManager.GraphicsDevice.Viewport;
             var fullscreen = new Rectangle(0, 0, viewport.Width, viewport.Height);
 
-            spriteBatch.Begin(transformMatrix: transform);
+            spriteBatch.Begin();
 
             spriteBatch.Draw(_backgroundTexture, fullscreen,
                 new Color(TransitionAlpha, TransitionAlpha, TransitionAlpha));

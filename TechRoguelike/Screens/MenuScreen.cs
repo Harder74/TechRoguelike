@@ -135,7 +135,7 @@ namespace TechRoguelike.Screens
             }
         }
 
-        public override void Draw(GameTime gameTime, Matrix transform)
+        public override void Draw(GameTime gameTime)
         {
             // make sure our entries are in the right place before we draw them
             UpdateMenuEntryLocations();
@@ -144,7 +144,7 @@ namespace TechRoguelike.Screens
             var spriteBatch = ScreenManager.SpriteBatch;
             var font = ScreenManager.Font;
 
-            spriteBatch.Begin(transformMatrix: transform);
+            spriteBatch.Begin();
 
             for (int i = 0; i < _menuEntries.Count; i++)
             {

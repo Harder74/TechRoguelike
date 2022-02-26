@@ -180,7 +180,7 @@ namespace TechRoguelike.StateManagement
         /// when another screen has taken the focus.
         /// </summary>
         /// <param name="gameTime">An object representing time in the game</param>
-        public virtual void Draw(GameTime gameTime, Matrix transform) { }
+        public virtual void Draw(GameTime gameTime) { }
 
         /// <summary>
         /// This method tells the screen to exit, allowing it time to transition off
