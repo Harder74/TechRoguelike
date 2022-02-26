@@ -9,15 +9,16 @@ namespace TechRoguelike.Entities
     {
        
 
-        public YellowSquare(Vector2 pos, Texture2D texture)
+        public YellowSquare(Vector2 pos, Texture2D texture, int roundCount)
         {
-            Health = 25;
+            Health = 25 + (roundCount*5);
             Position = pos;
             Texture = texture;
             LinearAcceleration = 450f;
             Scale = 2f;
             bounds = new BoundingRectangle(new Vector2(50, 50), 32, 32);
-            RamDamage = 50f;
+            RamDamage = 50f + (roundCount * 5f);
+            Score = 10f;
         }
 
         public override void Update(GameTime gameTime, Vector2 playerPos)

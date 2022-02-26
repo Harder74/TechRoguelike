@@ -19,7 +19,7 @@ namespace TechRoguelike.Screens
         private GameplayStates gameplayState = GameplayStates.Loading;
 
         private PlayerSprite _player;
-        private Vector2 _playerPosition = new Vector2(400, 400);
+        private Vector2 _playerPosition = new Vector2(0,0);
         private Vector2 _velocity;
         private Vector2 _acceleration;
         private float _angularAcceleration;
@@ -61,7 +61,7 @@ namespace TechRoguelike.Screens
         private Texture2D bottomHealth;
 
         private double invincibleTimer;
-
+        private float score;
 
 
         public GameplayScreen()
@@ -73,6 +73,9 @@ namespace TechRoguelike.Screens
                 new[] { Buttons.Start, Buttons.Back },
                 new[] { Keys.Back, Keys.Escape }, true);
 
+            
+            
+
         }
 
         // Load graphics content for the game
@@ -80,7 +83,9 @@ namespace TechRoguelike.Screens
         {
             if (_content == null)
                 _content = new ContentManager(ScreenManager.Game.Services, "Content");
-    
+            var viewport = ScreenManager.Game.GraphicsDevice.Viewport;
+            _playerPosition.X = viewport.Width / 2;
+            _playerPosition.Y = viewport.Height / 2;
             _player = new PlayerSprite(_playerPosition);
             _player.LoadContent(_content);
             //collisionObjects.Add((IBounds)_player);
@@ -118,7 +123,7 @@ namespace TechRoguelike.Screens
                 {
                     MediaPlayer.Resume();
                 }
-                /*
+                
                 enemies.RemoveAll(x => x.IsDestroyed == true);
                 _bullets.RemoveAll(x => x._destroy == true);
                 
@@ -132,33 +137,14 @@ namespace TechRoguelike.Screens
                         if (enemy.BoundingRectangle.CollidesWith(bullet.BoundingRectangle))
                         {
                             enemy.TakeDamage(_player.Damage);
+                            score += _player.Damage * roundCount * (1 / 5f);
                             bullet._destroy = true;
                         }
                     }
                 }
-                */
+                
 
-                for(int i = 0; i < _bullets.Count; i++)
-                {
-                    _bullets[i].Update(gameTime);
-                    for(int j = 0; j < enemies.Count; j++)
-                    {
-                        if (enemies[j].BoundingRectangle.CollidesWith(_bullets[i].BoundingRectangle))
-                        {
-                            enemies[j].TakeDamage(_player.Damage);
-                            _bullets[i]._destroy = true;
-                        }
-                        if (enemies[j].IsDestroyed)
-                        {
-                            enemies.RemoveAt(j);
-                        }
-                    }
-
-                    if (_bullets[i]._destroy)
-                    {
-                        _bullets.RemoveAt(i);
-                    }
-                }
+               
                 
                 switch (gameplayState)
                 {
@@ -171,14 +157,14 @@ namespace TechRoguelike.Screens
                         }
                         break;
                     case GameplayStates.Start:
-                        roundSwitchTimer += gameTime.ElapsedGameTime.TotalSeconds;
+                        roundSwitchTimer += gameTime.ElapsedGameTime.TotalSeconds;                       
                         if (roundSwitchTimer > 5f)
                         {
                             for (int i = 0; i < roundCount; i++)
                             {
                                 float x = (float)random.NextDouble() * -100 - 50;
                                 float y = (float)random.NextDouble() * 480;
-                                var temp = new YellowSquare(new Vector2(x, y), yellowSquare);
+                                var temp = new YellowSquare(new Vector2(x, y), yellowSquare, roundCount);
                                 enemies.Add(temp);
                                 //collisionObjects.Add((IBounds)temp);
                             }
@@ -200,6 +186,7 @@ namespace TechRoguelike.Screens
                                     _player.TakeDamage(enemy.RamDamage);
                                 }
                                 enemy.TakeDamage(_player.RamDamage);
+                                score += _player.Damage * roundCount * (1 / 5f);
                                 enemy.BeenHit = true;
                             }
                             if (!_player.BoundingRectangle.CollidesWith(enemy.BoundingRectangle) && enemy.BeenHit == true)
@@ -208,12 +195,11 @@ namespace TechRoguelike.Screens
 
                             }
                         }
-                        
                         if (_player.BeenHit)
                         {
                             invincibleTimer += gameTime.ElapsedGameTime.TotalSeconds;
                         }
-                        if(invincibleTimer >= 3f)
+                        if(invincibleTimer >= 1.5f)
                         {
                             invincibleTimer = 0f;
                             _player.BeenHit = false;
@@ -230,7 +216,7 @@ namespace TechRoguelike.Screens
                         }
                         break;
                     case GameplayStates.End:
-                        _player.Health += .05f*_player.MAX_HEALTH;
+                        _player.Health += .05f * _player.MAX_HEALTH;
                         gameplayState = GameplayStates.Start;
                         break;
                     case GameplayStates.Gameover:
@@ -250,7 +236,7 @@ namespace TechRoguelike.Screens
             // Look up inputs for the active player profile.
             int playerIndex = (int)ControllingPlayer.Value;
             var keyboardState = input.CurrentKeyboardStates[playerIndex];
-            
+
             var viewport = ScreenManager.Game.GraphicsDevice.Viewport;
             PlayerIndex player;
             if (_pauseAction.Occurred(input, ControllingPlayer, out player))
@@ -401,6 +387,8 @@ namespace TechRoguelike.Screens
             var rec = new Rectangle(0, 0, (int)(_player.Health / _player.MAX_HEALTH * 128), 128);
             spriteBatch.Draw(bottomHealth, new Vector2(viewport.Width / 2, viewport.Height - 75), null, Color.White, 0f, new Vector2(64,64), 4f, SpriteEffects.None, 0);
             spriteBatch.Draw(topHealth, new Vector2(viewport.Width / 2, viewport.Height - 75), rec, Color.White, 0f, new Vector2(64, 64), 4f, SpriteEffects.None, 0);
+            var scoreText = $"Score: {score}";
+            spriteBatch.DrawString(_gameFont, scoreText, new Vector2(15, 15), Color.White, 0, new Vector2(0, 0), 0.75f, SpriteEffects.None, 0);
 
             spriteBatch.End();
 
