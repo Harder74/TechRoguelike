@@ -168,7 +168,7 @@ namespace TechRoguelike.Screens
                                 enemies.Add(temp);
                                 //collisionObjects.Add((IBounds)temp);
                             }
-                            roundSwitchTimer = 0;                    
+                            roundSwitchTimer = 0;
                             gameplayState = GameplayStates.During;
                         }
                         break;
@@ -198,11 +198,13 @@ namespace TechRoguelike.Screens
                         if (_player.BeenHit)
                         {
                             invincibleTimer += gameTime.ElapsedGameTime.TotalSeconds;
+                            _player.Color = Color.Gray;
                         }
                         if(invincibleTimer >= 1.5f)
                         {
                             invincibleTimer = 0f;
                             _player.BeenHit = false;
+                            _player.Color = Color.White;
                         }
                         
                         if (_player.Health <= 0)
@@ -218,6 +220,9 @@ namespace TechRoguelike.Screens
                     case GameplayStates.End:
                         _player.Health += .05f * _player.MAX_HEALTH;
                         gameplayState = GameplayStates.Start;
+                        invincibleTimer = 0f;
+                        _player.BeenHit = false;
+                        _player.Color = Color.White;
                         break;
                     case GameplayStates.Gameover:
                         ExitScreen();
