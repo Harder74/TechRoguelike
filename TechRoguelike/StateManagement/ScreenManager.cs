@@ -68,7 +68,7 @@ namespace TechRoguelike.StateManagement
             base.Initialize();
             // TODO: Add your initialization logic here
             _gameResolution = GameResolution.SixteenToNine;
-            _displayStrategy = DisplayStrategy.ScaleToCover;
+            _displayStrategy = DisplayStrategy.ScaleToFit;
             DetermineScreenSize();
 
             _isInitialized = true;
