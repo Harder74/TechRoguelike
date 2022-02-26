@@ -121,12 +121,12 @@ namespace TechRoguelike.Screens
                 
                 enemies.RemoveAll(x => x.IsDestroyed == true);
                 _bullets.RemoveAll(x => x._destroy == true);
-               
+
                 foreach (BulletSprite bullet in _bullets)
                 {
                     bullet.Update(gameTime);
 
-                   
+                    
                     foreach (Enemy enemy in enemies)
                     {
                         if (enemy.BoundingRectangle.CollidesWith(bullet.BoundingRectangle))
