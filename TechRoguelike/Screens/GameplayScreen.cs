@@ -208,7 +208,7 @@ namespace TechRoguelike.Screens
                         }
                         break;
                     case GameplayStates.End:
-                        _player.Health += .1f*_player.MAX_HEALTH;
+                        _player.Health += .05f*_player.MAX_HEALTH;
                         gameplayState = GameplayStates.Start;
                         break;
                     case GameplayStates.Gameover:

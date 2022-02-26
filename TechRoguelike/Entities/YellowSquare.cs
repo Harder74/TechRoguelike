@@ -17,7 +17,7 @@ namespace TechRoguelike.Entities
             LinearAcceleration = 450f;
             Scale = 2f;
             bounds = new BoundingRectangle(new Vector2(50, 50), 32, 32);
-            RamDamage = 25f;
+            RamDamage = 50f;
         }
 
         public override void Update(GameTime gameTime, Vector2 playerPos)
