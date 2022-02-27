@@ -103,7 +103,7 @@ namespace TechRoguelike.Screens
         {
             player.MAX_HEALTH += HealthUpgrade;
             player.Health += HealthUpgrade;
-            player.FIRE_RATE += FireRateUpgrade;
+            if(player.FIRE_RATE - FireRateUpgrade > 0) player.FIRE_RATE -= FireRateUpgrade;
             player.Damage += DamageUpgrade;
             player.RamDamage += RamDamageUpgrade;
         }

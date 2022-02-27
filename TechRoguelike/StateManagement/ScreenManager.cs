@@ -85,7 +85,7 @@ namespace TechRoguelike.StateManagement
             PowerUpTextures.Add(_content.Load<Texture2D>("PowerUpHealth"));
             //var temp2 = _content.Load<Texture2D>("PowerUpDamage");
             PowerUpTextures.Add(_content.Load<Texture2D>("PowerUpDamageFixed"));
-
+            PowerUpTextures.Add(_content.Load<Texture2D>("PowerFireRateFixed"));
             // Tell each of the screens to load thier content 
             foreach (var screen in _screens)
             {

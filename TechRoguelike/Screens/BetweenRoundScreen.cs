@@ -28,13 +28,17 @@ namespace TechRoguelike.Screens
             for(int i = 0; i < choices.Length; i++)
             {
                 choice = random.Next(0, 10);
-                if(choice < 5)
+                if(choice < 4)
                 {
                     choices[i] = new HealthPowerUp(screenManager.PowerUpTextures[0]);
                 }
-                else
+                else if(choice < 8)
                 {
                     choices[i] = new DamagePowerUp(screenManager.PowerUpTextures[1]);
+                }
+                else
+                {
+                    choices[i] = new FireRatePowerUp(screenManager.PowerUpTextures[2]);
                 }
             }
             
