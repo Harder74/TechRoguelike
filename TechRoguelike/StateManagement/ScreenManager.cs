@@ -42,7 +42,7 @@ namespace TechRoguelike.StateManagement
         /// <summary>
         /// A blank texture that can be used by the screens.
         /// </summary>
-       // public Texture2D BlankTexture { get; private set; }
+       public List<Texture2D> PowerUpTextures { get; private set; }
 
         /// <summary>
         /// Constructs a new ScreenManager
@@ -56,7 +56,7 @@ namespace TechRoguelike.StateManagement
             _graphics.IsFullScreen = true;
             _graphics.PreferredBackBufferWidth = screen.Width;
             _graphics.PreferredBackBufferHeight = screen.Height;
-            
+            PowerUpTextures = new List<Texture2D>();
             _graphics.ApplyChanges();
         }
 
@@ -81,7 +81,8 @@ namespace TechRoguelike.StateManagement
         {
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             Font = _content.Load<SpriteFont>("gameplayfont");
-           // BlankTexture = _content.Load<Texture2D>("blank");
+            var temp = _content.Load<Texture2D>("PowerUpHealth");
+            PowerUpTextures.Add(temp);
 
             // Tell each of the screens to load thier content 
             foreach (var screen in _screens)

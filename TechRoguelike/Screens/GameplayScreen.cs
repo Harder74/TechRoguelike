@@ -42,6 +42,7 @@ namespace TechRoguelike.Screens
 
         private const float FIRE_RATE = .5f;
         private double fireRateTimer;
+        private double shotTimer;
         private double roundSwitchTimer;
         private bool _initialShot = false;
 
@@ -255,6 +256,7 @@ namespace TechRoguelike.Screens
                         invincibleTimer = 0f;
                         _player.BeenHit = false;
                         _player.Color = Color.White;
+                       // LoadingScreen.Load(ScreenManager, false, PlayerIndex.One, new BetweenRoundScreen());
                         break;
                     case GameplayStates.Gameover:
                         ExitScreen();
@@ -305,6 +307,8 @@ namespace TechRoguelike.Screens
                 //player input for shooting
                 if(keyboardState.IsKeyDown(Keys.Space))
                 {
+
+                    /*
                     fireRateTimer += gameTime.ElapsedGameTime.TotalSeconds;
                     if (!_initialShot)
                     {
@@ -321,13 +325,45 @@ namespace TechRoguelike.Screens
                         _bullets.Add(bullet);
                         //collisionObjects.Add(bullet);
                         fireRateTimer = 0;
-                    }                  
+                    }
+                    */
+
+                   
+                    if (!_initialShot)
+                    {
+                        soundEffect.Play();
+                        var bullet = new BulletSprite(BulletType.Thick, new Vector2(_playerPosition.X, _playerPosition.Y), _shot, _direction, viewport, angle);
+                        _bullets.Add(bullet);
+                        //collisionObjects.Add(bullet);
+                        _initialShot = true;
+                    }
+                    else if (fireRateTimer > FIRE_RATE)
+                    {
+                        soundEffect.Play();
+                        var bullet = new BulletSprite(BulletType.Thick, new Vector2(_playerPosition.X, _playerPosition.Y), _shot, _direction, viewport, angle);
+                        _bullets.Add(bullet);
+                        //collisionObjects.Add(bullet);
+                        fireRateTimer = 0;
+                    }
+                    else
+                    {
+                        fireRateTimer += gameTime.ElapsedGameTime.TotalSeconds;
+                    }
+                    
+
                 }
                 //checks for player input to reset initial shot
                 if (keyboardState.IsKeyUp(Keys.Space))
                 {
-                    _initialShot = false;
-                    fireRateTimer = 0;
+                    
+                    shotTimer += gameTime.ElapsedGameTime.TotalSeconds; 
+                    if(shotTimer > FIRE_RATE / 2)
+                    {
+                        _initialShot = false;
+                        fireRateTimer = 0;
+                        shotTimer = 0;
+                    }
+                   
                 }
 
                 //checks for player input for boost, and slows down player when not boosting

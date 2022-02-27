@@ -12,8 +12,8 @@ namespace TechRoguelike.Screens
     public abstract class MenuScreen : GameScreen
     {
         private readonly List<MenuEntry> _menuEntries = new List<MenuEntry>();
-        private int _selectedEntry;
-        private readonly string _menuTitle;
+        public int _selectedEntry;
+        public readonly string _menuTitle;
 
         private readonly InputAction _menuUp;
         private readonly InputAction _menuDown;
@@ -94,7 +94,7 @@ namespace TechRoguelike.Screens
 
         // Allows the screen the chance to position the menu entries. By default,
         // all menu entries are lined up in a vertical list, centered on the screen.
-        protected virtual void UpdateMenuEntryLocations()
+        public virtual void UpdateMenuEntryLocations()
         {
             // Make the menu slide into place during transitions, using a
             // power curve to make things look more interesting (this makes
