@@ -4,18 +4,27 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using TechRoguelike.StateManagement;
+using TechRoguelike.Entities;
 
 namespace TechRoguelike.Screens
 {
-    public class BetweenRoundScreen : MenuScreen
+    public class BetweenRoundScreen : GameScreen
     {
         private readonly List<PowerUpEntry> powerUpEntries = new List<PowerUpEntry>();
         protected IList<PowerUpEntry> PowerUpEntries => powerUpEntries;
-        public BetweenRoundScreen() : base("Pick An Upgrade")
+        private readonly string text = "Choose a Power Up";
+        public int _selectedEntry;
+        private readonly InputAction _menuLeft;
+        private readonly InputAction _menuRight;
+        private readonly InputAction _menuSelect;
+        private PlayerSprite Player;
+
+        public BetweenRoundScreen(ScreenManager screenManager, PlayerSprite player)
         {
-            var firstPower = new PowerUpEntry("test", ScreenManager.PowerUpTextures[0]);
-            var secondPower = new PowerUpEntry("test2", ScreenManager.PowerUpTextures[0]);
-            var thirdPower = new PowerUpEntry("test3", ScreenManager.PowerUpTextures[0]);
+            Player = player;
+            var firstPower = new PowerUpEntry("test", screenManager.PowerUpTextures[0]);
+            var secondPower = new PowerUpEntry("test2", screenManager.PowerUpTextures[0]);
+            var thirdPower = new PowerUpEntry("test3", screenManager.PowerUpTextures[0]);
 
             firstPower.Selected += OnCancel;
             secondPower.Selected += OnCancel;
@@ -24,10 +33,54 @@ namespace TechRoguelike.Screens
             PowerUpEntries.Add(firstPower);
             PowerUpEntries.Add(secondPower);
             PowerUpEntries.Add(thirdPower);
+
+            TransitionOnTime = TimeSpan.FromSeconds(0.5);
+            TransitionOffTime = TimeSpan.FromSeconds(0.5);
+
+            _menuLeft = new InputAction(
+                new[] { Buttons.DPadUp, Buttons.LeftThumbstickUp },
+                new[] { Keys.A, Keys.Left}, true);
+            _menuRight = new InputAction(
+                new[] { Buttons.DPadDown, Buttons.LeftThumbstickDown },
+                new[] { Keys.D, Keys.Right}, true);
+            _menuSelect = new InputAction(
+                new[] { Buttons.A, Buttons.Start },
+                new[] { Keys.Enter, Keys.Space }, true);
+            
         }
+        public override void HandleInput(GameTime gameTime, InputState input)
+        {
+            // For input tests we pass in our ControllingPlayer, which may
+            // either be null (to accept input from any player) or a specific index.
+            // If we pass a null controlling player, the InputState helper returns to
+            // us which player actually provided the input. We pass that through to
+            // OnSelectEntry and OnCancel, so they can tell which player triggered them.
+            PlayerIndex playerIndex;
+
+            if (_menuRight.Occurred(input, ControllingPlayer, out playerIndex))
+            {
+                _selectedEntry--;
+
+                if (_selectedEntry < 0)
+                    _selectedEntry = powerUpEntries.Count - 1;
+            }
+
+            if (_menuLeft.Occurred(input, ControllingPlayer, out playerIndex))
+            {
+                _selectedEntry++;
+
+                if (_selectedEntry >= powerUpEntries.Count)
+                    _selectedEntry = 0;
+            }
+
+            if (_menuSelect.Occurred(input, ControllingPlayer, out playerIndex))
+                OnSelectEntry(_selectedEntry, playerIndex);
+            
+        }
+
         // Allows the screen the chance to position the menu entries. By default,
         // all menu entries are lined up in a vertical list, centered on the screen.
-        public override void UpdateMenuEntryLocations()
+        public void UpdateMenuEntryLocations()
         {
             // Make the menu slide into place during transitions, using a
             // power curve to make things look more interesting (this makes
@@ -64,7 +117,6 @@ namespace TechRoguelike.Screens
 
         public override void Draw(GameTime gameTime)
         {
-            base.Draw(gameTime);
             UpdateMenuEntryLocations();
 
             var graphics = ScreenManager.GraphicsDevice;
@@ -72,31 +124,66 @@ namespace TechRoguelike.Screens
             var font = ScreenManager.Font;
 
             spriteBatch.Begin();
-
+            
             for (int i = 0; i < powerUpEntries.Count; i++)
             {
                 var powerUpEntry = powerUpEntries[i];
                 bool isSelected = IsActive && i == _selectedEntry;
                 powerUpEntry.Draw(this, isSelected, gameTime);
             }
-
+            
             // Make the menu slide into place during transitions, using a
             // power curve to make things look more interesting (this makes
             // the movement slow down as it nears the end).
             float transitionOffset = (float)Math.Pow(TransitionPosition, 2);
 
             // Draw the menu title centered on the screen
-            var titlePosition = new Vector2(graphics.Viewport.Width / 2, graphics.Viewport.Height / 2 - 100);
-            var titleOrigin = font.MeasureString(_menuTitle) / 2;
+            var titlePosition = new Vector2(graphics.Viewport.Width / 2, graphics.Viewport.Height / 2 - 256);
+            var titleOrigin = font.MeasureString(text) / 2;
             var titleColor = new Color(192, 192, 192) * TransitionAlpha;
             const float titleScale = 1.25f;
 
             titlePosition.Y -= transitionOffset * 100;
 
-            spriteBatch.DrawString(font, _menuTitle, titlePosition, titleColor,
-                0, titleOrigin, titleScale, SpriteEffects.None, 0);
+            spriteBatch.DrawString(font, text, titlePosition, titleColor, 0, titleOrigin, titleScale, SpriteEffects.None, 0);
 
             spriteBatch.End();
+        }
+
+        protected void OnCancel(PlayerIndex playerIndex)
+        {
+            ExitScreen();
+        }
+
+        // Helper overload makes it easy to use OnCancel as a MenuEntry event handler.
+        protected void OnCancel(object sender, PlayerIndexEventArgs e)
+        {
+            OnCancel(e.PlayerIndex);
+        }
+
+        public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
+        {
+            base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+
+            // Update each nested MenuEntry object.
+            for (int i = 0; i < powerUpEntries.Count; i++)
+            {
+                bool isSelected = IsActive && i == _selectedEntry;
+                powerUpEntries[i].Update(this, isSelected, gameTime);
+            }
+        }
+
+        protected virtual void OnSelectEntry(int entryIndex, PlayerIndex playerIndex)
+        {
+            powerUpEntries[entryIndex].OnSelectEntry(playerIndex);
+        }
+
+        protected void OnSelection(object sender, PlayerIndexEventArgs e)
+        {
+            if(sender is PowerUpEntry powerUp)
+            {
+                powerUp.UpdatePlayerStats(Player);
+            }
         }
     }
 }

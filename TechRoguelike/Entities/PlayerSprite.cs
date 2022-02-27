@@ -43,6 +43,7 @@ namespace TechRoguelike.Entities
         public float MAX_HEALTH = 200f;
         private Texture2D topHealth;
         private Texture2D bottomHealth;
+        public float FIRE_RATE = .5f;
 
         public bool BeenHit = false;
 

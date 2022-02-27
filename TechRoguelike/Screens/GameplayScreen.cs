@@ -40,7 +40,7 @@ namespace TechRoguelike.Screens
         private float _pauseAlpha;
         private readonly InputAction _pauseAction;
 
-        private const float FIRE_RATE = .5f;
+        
         private double fireRateTimer;
         private double shotTimer;
         private double roundSwitchTimer;
@@ -99,7 +99,7 @@ namespace TechRoguelike.Screens
             _testing = _content.Load<Texture2D>("ball");
             soundEffect = _content.Load<SoundEffect>("FullSweep");
             yellowSquare = _content.Load<Texture2D>("YellowSquare");
-           topHealth = _content.Load<Texture2D>("TopLayerHealth");
+            topHealth = _content.Load<Texture2D>("TopLayerHealth");
             bottomHealth = _content.Load<Texture2D>("BottomLayerHealth");
             SoundEffect.MasterVolume = .25f;
 
@@ -251,12 +251,13 @@ namespace TechRoguelike.Screens
                         }
                         break;
                     case GameplayStates.End:
-                        _player.Health += .05f * _player.MAX_HEALTH;
-                        gameplayState = GameplayStates.Start;
                         invincibleTimer = 0f;
                         _player.BeenHit = false;
                         _player.Color = Color.White;
-                       // LoadingScreen.Load(ScreenManager, false, PlayerIndex.One, new BetweenRoundScreen());
+                        ScreenManager.AddScreen(new BetweenRoundScreen(ScreenManager, _player), ControllingPlayer);
+                        _player.Health += .05f * _player.MAX_HEALTH;
+                        gameplayState = GameplayStates.Start;
+                        // LoadingScreen.Load(ScreenManager, false, PlayerIndex.One, new BetweenRoundScreen());
                         break;
                     case GameplayStates.Gameover:
                         ExitScreen();
@@ -337,7 +338,7 @@ namespace TechRoguelike.Screens
                         //collisionObjects.Add(bullet);
                         _initialShot = true;
                     }
-                    else if (fireRateTimer > FIRE_RATE)
+                    else if (fireRateTimer > _player.FIRE_RATE)
                     {
                         soundEffect.Play();
                         var bullet = new BulletSprite(BulletType.Thick, new Vector2(_playerPosition.X, _playerPosition.Y), _shot, _direction, viewport, angle);
@@ -357,7 +358,7 @@ namespace TechRoguelike.Screens
                 {
                     
                     shotTimer += gameTime.ElapsedGameTime.TotalSeconds; 
-                    if(shotTimer > FIRE_RATE / 2)
+                    if(shotTimer > _player.FIRE_RATE / 2)
                     {
                         _initialShot = false;
                         fireRateTimer = 0;

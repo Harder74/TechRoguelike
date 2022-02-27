@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using TechRoguelike.StateManagement;
+using TechRoguelike.Entities;
 
 
 namespace TechRoguelike.Screens
@@ -32,6 +33,12 @@ namespace TechRoguelike.Screens
             set => _position = value;
         }
 
+        public float HealthUpgrade = 0;
+        public float FireRateUpgrade = 0;
+        public float DamageUpgrade = 0;
+        public float RamDamageUpgrade = 0;
+
+
         public event EventHandler<PlayerIndexEventArgs> Selected;
         protected internal virtual void OnSelectEntry(PlayerIndex playerIndex)
         {
@@ -44,7 +51,7 @@ namespace TechRoguelike.Screens
             _powerUp = powerUp;
         }
 
-        public virtual void Update(MenuScreen screen, bool isSelected, GameTime gameTime)
+        public virtual void Update(GameScreen screen, bool isSelected, GameTime gameTime)
         {
             // When the menu selection changes, entries gradually fade between
             // their selected and deselected appearance, rather than instantly
@@ -59,14 +66,14 @@ namespace TechRoguelike.Screens
 
 
         // This can be overridden to customize the appearance.
-        public virtual void Draw(MenuScreen screen, bool isSelected, GameTime gameTime)
+        public virtual void Draw(GameScreen screen, bool isSelected, GameTime gameTime)
         {
-            var color = isSelected ? Color.SkyBlue : Color.White;
+            var color = isSelected ? Color.Gray : Color.White;
 
             // Pulsate the size of the selected menu entry.
             double time = gameTime.TotalGameTime.TotalSeconds;
             float pulsate = (float)Math.Sin(time * 6) + 1;
-            float scale = 1 + pulsate * 0.05f * _selectionFade;
+            float scale = 1.5f + pulsate * 0.05f * _selectionFade;
 
             // Modify the alpha to fade text out during transitions.
             color *= screen.TransitionAlpha;
@@ -77,9 +84,8 @@ namespace TechRoguelike.Screens
             var font = screenManager.Font;
 
             var origin = new Vector2(0, font.LineSpacing / 2);
-
-            spriteBatch.DrawString(font, _text, _position, color, 0,
-                origin, scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(_powerUp, _position, null, color, 0f, origin, scale, SpriteEffects.None, 0f);
+            //spriteBatch.DrawString(font, _text, _position, color, 0, origin, scale, SpriteEffects.None, 0);
         }
 
         public virtual int GetHeight(MenuScreen screen)
@@ -90,6 +96,15 @@ namespace TechRoguelike.Screens
         public virtual int GetWidth(MenuScreen screen)
         {
             return (int)screen.ScreenManager.Font.MeasureString(Text).X;
+        }
+
+        public void UpdatePlayerStats(PlayerSprite player)
+        {
+            player.MAX_HEALTH += HealthUpgrade;
+            player.Health += HealthUpgrade;
+            player.FIRE_RATE += FireRateUpgrade;
+            player.Damage += DamageUpgrade;
+            player.RamDamage += RamDamageUpgrade;
         }
     }
 }
