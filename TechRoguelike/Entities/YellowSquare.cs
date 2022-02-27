@@ -11,13 +11,13 @@ namespace TechRoguelike.Entities
 
         public YellowSquare(Vector2 pos, Texture2D texture, int roundCount)
         {
-            Health = 25 + (roundCount*5);
+            Health = 25 + (roundCount*8);
             Position = pos;
             Texture = texture;
             //LinearAcceleration = 450f;
             Scale = 2f;
             bounds = new BoundingRectangle(new Vector2(50, 50), 32, 32);
-            RamDamage = 50f + (roundCount * 5f);
+            RamDamage = 75f + (roundCount * 5f);
             Score = 10f;
         }
 
@@ -25,10 +25,10 @@ namespace TechRoguelike.Entities
         {
             if (Health < 0) IsDestroyed = true;
             float t = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            Direction = Vector2.Normalize(playerPos - (Position));
-            LinearAcceleration += Direction * 1000f * t;
-            LinearAcceleration = Vector2.Clamp(LinearAcceleration, MIN_VELOCITY, MAX_VELOCITY);
-            LinearVelocity += (LinearAcceleration - (-Direction * 25f)) * t;
+            Direction = playerPos - Position;
+            LinearAcceleration += Direction * 100f * t;
+            LinearAcceleration = Vector2.Clamp(LinearAcceleration, MIN_ACCELERATION, MAX_ACCELERATION);
+            LinearVelocity += LinearAcceleration * t;
             LinearVelocity = Vector2.Clamp(LinearVelocity, MIN_VELOCITY, MAX_VELOCITY);
             /*
             if (LinearAcceleration.X > 200) LinearAcceleration.X -= 25f;

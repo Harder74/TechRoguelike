@@ -31,8 +31,8 @@ namespace TechRoguelike.Entities
         public Vector2 Direction;
         public Vector2 MAX_VELOCITY = new Vector2(200, 200);
         public Vector2 MIN_VELOCITY = new Vector2(-200, -200);
-        public Vector2 MAX_ACCELERATION = new Vector2(5000, 5000);
-        public Vector2 MIN_ACCELERATION = new Vector2(-5000, -5000);
+        public Vector2 MAX_ACCELERATION = new Vector2(750, 750);
+        public Vector2 MIN_ACCELERATION = new Vector2(-750, -750);
         public float RamDamage;
         public bool BeenHit = false;
         public float Score;
