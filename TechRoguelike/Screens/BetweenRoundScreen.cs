@@ -22,13 +22,16 @@ namespace TechRoguelike.Screens
         public BetweenRoundScreen(ScreenManager screenManager, PlayerSprite player)
         {
             Player = player;
-            var firstPower = new PowerUpEntry("test", screenManager.PowerUpTextures[0]);
-            var secondPower = new PowerUpEntry("test2", screenManager.PowerUpTextures[0]);
-            var thirdPower = new PowerUpEntry("test3", screenManager.PowerUpTextures[0]);
+            var firstPower = new HealthPowerUp(screenManager.PowerUpTextures[0]);
+            var secondPower = new HealthPowerUp(screenManager.PowerUpTextures[0]);
+            var thirdPower = new HealthPowerUp(screenManager.PowerUpTextures[0]);
 
             firstPower.Selected += OnCancel;
             secondPower.Selected += OnCancel;
             thirdPower.Selected += OnCancel;
+            firstPower.Selected += OnSelection;
+            secondPower.Selected += OnSelection;
+            thirdPower.Selected += OnSelection;
 
             PowerUpEntries.Add(firstPower);
             PowerUpEntries.Add(secondPower);

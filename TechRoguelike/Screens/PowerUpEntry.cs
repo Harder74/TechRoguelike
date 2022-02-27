@@ -14,16 +14,16 @@ namespace TechRoguelike.Screens
         private string _text;
         private float _selectionFade;    // Entries transition out of the selection effect when they are deselected
         private Vector2 _position;    // This is set by the MenuScreen each frame in Update
-        private Texture2D _powerUp;
+        public Texture2D _powerUp;
         public string Text
         {
-            private get => _text;
+             get => _text;
             set => _text = value;
         }
 
         public Texture2D PowerUp
         {
-            private get => _powerUp;
+             get => _powerUp;
             set => _powerUp = value;
         }
 
@@ -45,9 +45,8 @@ namespace TechRoguelike.Screens
             Selected?.Invoke(this, new PlayerIndexEventArgs(playerIndex));
         }
 
-        public PowerUpEntry(string text, Texture2D powerUp)
+        public PowerUpEntry(Texture2D powerUp)
         {
-            _text = text;
             _powerUp = powerUp;
         }
 
@@ -83,9 +82,11 @@ namespace TechRoguelike.Screens
             var spriteBatch = screenManager.SpriteBatch;
             var font = screenManager.Font;
 
-            var origin = new Vector2(0, font.LineSpacing / 2);
+            var origin = new Vector2(32,32);
             spriteBatch.Draw(_powerUp, _position, null, color, 0f, origin, scale, SpriteEffects.None, 0f);
-            //spriteBatch.DrawString(font, _text, _position, color, 0, origin, scale, SpriteEffects.None, 0);
+            _position.Y += 128;
+            origin = new Vector2(font.MeasureString(_text).X/2, font.LineSpacing / 2);
+            spriteBatch.DrawString(font, _text, _position, color, 0, origin, scale, SpriteEffects.None, 0);
         }
 
         public virtual int GetHeight(MenuScreen screen)
