@@ -14,7 +14,7 @@ namespace TechRoguelike.Entities
             Health = 25 + (roundCount*5);
             Position = pos;
             Texture = texture;
-            LinearAcceleration = 450f;
+            //LinearAcceleration = 450f;
             Scale = 2f;
             bounds = new BoundingRectangle(new Vector2(50, 50), 32, 32);
             RamDamage = 50f + (roundCount * 5f);
@@ -26,12 +26,16 @@ namespace TechRoguelike.Entities
             if (Health < 0) IsDestroyed = true;
             float t = (float)gameTime.ElapsedGameTime.TotalSeconds;
             Direction = Vector2.Normalize(playerPos - (Position));
-            LinearVelocity += Direction * LinearAcceleration * t;
+            LinearAcceleration += Direction * 1000f * t;
+            LinearAcceleration = Vector2.Clamp(LinearAcceleration, MIN_VELOCITY, MAX_VELOCITY);
+            LinearVelocity += (LinearAcceleration - (-Direction * 25f)) * t;
             LinearVelocity = Vector2.Clamp(LinearVelocity, MIN_VELOCITY, MAX_VELOCITY);
-            if (LinearVelocity.X > 200) LinearVelocity.X -= 25f;
-            if (LinearVelocity.X < -200) LinearVelocity.X += 25f;
-            if (LinearVelocity.Y < -200) LinearVelocity.Y += 25f;
-            if (LinearVelocity.Y > 200) LinearVelocity.Y -= 25f;
+            /*
+            if (LinearAcceleration.X > 200) LinearAcceleration.X -= 25f;
+            if (LinearAcceleration.X < -200) LinearAcceleration.X += 25f;
+            if (LinearAcceleration.Y < -200) LinearAcceleration.Y += 25f;
+            if (LinearAcceleration.Y > 200) LinearAcceleration.Y -= 25f;
+            */
             Position += LinearVelocity * t;
             bounds.X = Position.X - 16;
             bounds.Y = Position.Y - 16;

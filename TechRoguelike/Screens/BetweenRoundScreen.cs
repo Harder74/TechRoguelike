@@ -18,24 +18,38 @@ namespace TechRoguelike.Screens
         private readonly InputAction _menuRight;
         private readonly InputAction _menuSelect;
         private PlayerSprite Player;
+        private Random random = new Random();
+        private PowerUpEntry[] choices = new PowerUpEntry[3];
 
         public BetweenRoundScreen(ScreenManager screenManager, PlayerSprite player)
         {
             Player = player;
-            var firstPower = new HealthPowerUp(screenManager.PowerUpTextures[0]);
-            var secondPower = new HealthPowerUp(screenManager.PowerUpTextures[0]);
-            var thirdPower = new HealthPowerUp(screenManager.PowerUpTextures[0]);
+            int choice;
+            for(int i = 0; i < choices.Length; i++)
+            {
+                choice = random.Next(0, 10);
+                if(choice < 5)
+                {
+                    choices[i] = new HealthPowerUp(screenManager.PowerUpTextures[0]);
+                }
+                else
+                {
+                    choices[i] = new DamagePowerUp(screenManager.PowerUpTextures[1]);
+                }
+            }
+            
+            
 
-            firstPower.Selected += OnCancel;
-            secondPower.Selected += OnCancel;
-            thirdPower.Selected += OnCancel;
-            firstPower.Selected += OnSelection;
-            secondPower.Selected += OnSelection;
-            thirdPower.Selected += OnSelection;
+            choices[0].Selected += OnCancel;
+            choices[1].Selected += OnCancel;
+            choices[2].Selected += OnCancel;
+            choices[0].Selected += OnSelection;
+            choices[1].Selected += OnSelection;
+            choices[2].Selected += OnSelection;
 
-            PowerUpEntries.Add(firstPower);
-            PowerUpEntries.Add(secondPower);
-            PowerUpEntries.Add(thirdPower);
+            PowerUpEntries.Add(choices[0]);
+            PowerUpEntries.Add(choices[1]);
+            PowerUpEntries.Add(choices[2]);
 
             TransitionOnTime = TimeSpan.FromSeconds(0.5);
             TransitionOffTime = TimeSpan.FromSeconds(0.5);

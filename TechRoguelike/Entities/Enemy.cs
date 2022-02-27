@@ -27,10 +27,12 @@ namespace TechRoguelike.Entities
         public Color Color = Color.White;
         public bool IsDestroyed = false;
         public Vector2 LinearVelocity;
-        public float LinearAcceleration;
+        public Vector2 LinearAcceleration;
         public Vector2 Direction;
-        public Vector2 MAX_VELOCITY = new Vector2(225, 225);
-        public Vector2 MIN_VELOCITY = new Vector2(-225, -225);
+        public Vector2 MAX_VELOCITY = new Vector2(200, 200);
+        public Vector2 MIN_VELOCITY = new Vector2(-200, -200);
+        public Vector2 MAX_ACCELERATION = new Vector2(5000, 5000);
+        public Vector2 MIN_ACCELERATION = new Vector2(-5000, -5000);
         public float RamDamage;
         public bool BeenHit = false;
         public float Score;

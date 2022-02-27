@@ -81,8 +81,10 @@ namespace TechRoguelike.StateManagement
         {
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             Font = _content.Load<SpriteFont>("gameplayfont");
-            var temp = _content.Load<Texture2D>("PowerUpHealth");
-            PowerUpTextures.Add(temp);
+            //var temp = _content.Load<Texture2D>("PowerUpHealth");
+            PowerUpTextures.Add(_content.Load<Texture2D>("PowerUpHealth"));
+            //var temp2 = _content.Load<Texture2D>("PowerUpDamage");
+            PowerUpTextures.Add(_content.Load<Texture2D>("PowerUpDamageFixed"));
 
             // Tell each of the screens to load thier content 
             foreach (var screen in _screens)
