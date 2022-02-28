@@ -71,9 +71,9 @@ namespace TechRoguelike.Entities
         public void LoadContent(ContentManager content)
         {
             _texture = content.Load<Texture2D>("BlueHazmatFull");
-            _shipBasic = content.Load<Texture2D>("ShipBasic");
-            _shipBoost1 = content.Load<Texture2D>("ShipBoost1");
-            _shipBoost2 = content.Load<Texture2D>("ShipBoost2");
+            _shipBasic = content.Load<Texture2D>("ShipBasicWhite");
+            _shipBoost1 = content.Load<Texture2D>("ShipBoostWhite1");
+            _shipBoost2 = content.Load<Texture2D>("ShipBoostWhite2");
             //topHealth = content.Load<Texture2D>("HealthTop");
             //bottomHealth = content.Load<Texture2D>("HealthBottom");
             //_testing = content.Load<Texture2D>("ball");

@@ -243,6 +243,18 @@
 /processorParam:TextureFormat=Color
 /build:ShipBasic.png
 
+#begin ShipBasicWhite.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:ShipBasicWhite.png
+
 #begin ShipBoost1.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -266,6 +278,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:ShipBoost2.png
+
+#begin ShipBoostWhite1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:ShipBoostWhite1.png
+
+#begin ShipBoostWhite2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:ShipBoostWhite2.png
 
 #begin ShipConcept.png
 /importer:TextureImporter
