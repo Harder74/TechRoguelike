@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using TechRoguelike.Entities;
 using TechRoguelike.StateManagement;
 using Microsoft.Xna.Framework.Audio;
+using TechRoguelike.Particles;
 
 namespace TechRoguelike.Screens
 {
@@ -63,7 +64,9 @@ namespace TechRoguelike.Screens
 
         private double invincibleTimer;
         private float score;
-
+        FireworkParticleSystem _fireworks;
+        bool _shaking = false;
+        float _shakeTime;
 
         public GameplayScreen()
         {
@@ -102,7 +105,8 @@ namespace TechRoguelike.Screens
             topHealth = _content.Load<Texture2D>("TopLayerHealth");
             bottomHealth = _content.Load<Texture2D>("BottomLayerHealth");
             SoundEffect.MasterVolume = .25f;
-
+            _fireworks = new FireworkParticleSystem(ScreenManager.Game, 25);
+            ScreenManager.Game.Components.Add(_fireworks);
             ScreenManager.Game.ResetElapsedTime();
 
         }
@@ -137,6 +141,7 @@ namespace TechRoguelike.Screens
                     {
                         if (enemy.BoundingRectangle.CollidesWith(bullet.BoundingRectangle))
                         {
+                            _fireworks.PlaceFirework(enemy.Position);
                             enemy.TakeDamage(_player.Damage);
                             score += _player.Damage * roundCount * (1 / 5f);
                             bullet._destroy = true;
@@ -217,6 +222,8 @@ namespace TechRoguelike.Screens
                                 {
                                     _player.BeenHit = true;
                                     _player.TakeDamage(enemy.RamDamage);
+                                    _fireworks.PlaceFirework(_playerPosition);
+                                    _shaking = true;
                                 }
                                 enemy.TakeDamage(_player.RamDamage);
                                 score += _player.Damage * roundCount * (1 / 5f);
@@ -439,7 +446,20 @@ namespace TechRoguelike.Screens
             var round = $"Round {roundCount}";
             var viewport = ScreenManager.GraphicsDevice.Viewport;
             var viewportSize = new Vector2(viewport.Width, viewport.Height);
-            spriteBatch.Begin();
+
+            Matrix shakeTransform = Matrix.Identity;
+            if (_shaking)
+            {
+                _shakeTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                shakeTransform = Matrix.CreateTranslation(2 * MathF.Sin(_shakeTime), 2 * MathF.Cos(_shakeTime), 0);
+                if (_shakeTime > 1000) _shaking = false;
+            }
+            if (!_shaking)
+            {
+                _shakeTime = 0;
+            }
+            
+            spriteBatch.Begin(transformMatrix: shakeTransform);
             
             if(gameplayState == GameplayStates.Loading)
             {
